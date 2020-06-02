@@ -20,7 +20,7 @@ pinsChannel = 513029879080419349 # channel id where the messages should be pinne
 pinsRoles = [ 441307762643959819, 421755121555210261 ] # list of role ids to activate the pinning system
 
 # leaderboard system parameters
-leaderboardEmoji = 716731228572876870 # id of the emoji to activate the scoring
+leaderboardEmoji = 512002627085795328 # id of the emoji to activate the scoring
 leaderboardChannel = 438363717995069463 # channel id in which the scoring works
 
 # other parameters
