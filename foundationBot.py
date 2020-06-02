@@ -26,9 +26,6 @@ leaderboardChannel = 438363717995069463 # channel id in which the scoring works
 # other parameters
 moddingChannel = 589771859793281054 # channel id of modding_general
 
-# the bot's unique token
-TOKEN = ''
-
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
 
 client = discord.Client()
@@ -362,6 +359,12 @@ def get_leaderboard_user_score(conn, userid):
 def sortKey(element):
     return element[2]
 
+# get the bot's unique token from a file
+def getToken():
+    with open ('TOKEN', 'r') as t:
+        TOKEN = t.read()
+    return TOKEN
+
 # ---------------------------------- MAIN CODE ---------------------------------- #
 
 def main():
@@ -375,9 +378,11 @@ def main():
         print('Error! cannot create the database connection.')
     # get all users already in the database and convert list of tuples to plain list
     leaderboard = list(sum(get_leaderboard_users(conn), ()))
-    return conn, leaderboard
+    # get the bot's unique token
+    TOKEN = getToken()
+    return conn, leaderboard, TOKEN
 
 if __name__ == '__main__':
-    conn, leaderboard = main()
+    conn, leaderboard, TOKEN = main()
     # start bot
     client.run(TOKEN)
