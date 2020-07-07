@@ -16,15 +16,15 @@ import os
 # Special Permissions Required: Manage Messages
 
 # pinning system parameters
-pinsChannel = 513029879080419349 # channel id where the messages should be pinned
-pinsRoles = [ 441307762643959819, 421755121555210261 ] # list of role ids to activate the pinning system
+pinsChannel = 710932116749156412 # channel id where the messages should be pinned
+pinsRoles = [ 710764517801590805 ] # list of role ids to activate the pinning system
 
 # leaderboard system parameters
-leaderboardEmoji = 512002627085795328 # id of the emoji to activate the scoring
-leaderboardChannel = 438363717995069463 # channel id in which the scoring works
+leaderboardEmoji = 642441101432848405 # id of the emoji to activate the scoring
+leaderboardChannel = 710932141021855784 # channel id in which the scoring works
 
 # other parameters
-moddingChannel = 589771859793281054 # channel id of modding_general
+moddingChannel = 710768911175385139 # channel id of modding_general
 
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
 
@@ -153,6 +153,40 @@ async def on_message(message):
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
+            await message.delete()
+        # Villager needs help command
+        elif cmd == '/needs':
+            villagerneeds = ('```Villager Rank Needs\n'
+            '+----------+-------+--------------+-------+---------+--------+--------+\n'
+            '|   Rank   | Water | Food Sources | House | Clothes | Church | Luxury |\n'
+            '+----------+-------+--------------+-------+---------+--------+--------+\n'
+            '| Newcomer |   x   |       1      |       |         |        |        |\n'
+            '+----------+-------+--------------+-------+---------+--------+--------+\n'
+            '|   Serf   |   x   |       1      | lvl 1 |         |    x   |        |\n'
+            '+----------+-------+--------------+-------+---------+--------+--------+\n'
+            '| Commoner |   x   |       2      | lvl 2 |    x    |    x   |        |\n'
+            '+----------+-------+--------------+-------+---------+--------+--------+\n'
+            '|  Citizen |   x   |       2      | lvl 2 |    x    |    x   |    1   |\n'
+            '+----------+-------+--------------+-------+---------+--------+--------+```')
+            armyneeds = ('```Army Rank Needs\n'
+            '+---------+-------+--------------+---------------+---------+--------+--------+\n'
+            '|   Rank  | Water | Food Sources |     House     | Clothes | Church | Luxury |\n'
+            '+---------+-------+--------------+---------------+---------+--------+--------+\n'
+            '|  Novice |   x   |       1      | lvl 1 / Dorms |         |    x   |        |\n'
+            '+---------+-------+--------------+---------------+---------+--------+--------+\n'
+            '| Soldier |   x   |       1      | lvl 2 / Dorms |    x    |    x   |    1   |\n'
+            '+---------+-------+--------------+---------------+---------+--------+--------+\n'
+            '|  Knight |   x   |       1      | lvl 2 / Dorms |    x    |    x   |    2   |\n'
+            '+---------+-------+--------------+---------------+---------+--------+--------+```')
+            clergyneeds = ('```Clergy Rank Needs\n'
+            '+------+-------+--------------+-------+---------+--------+--------+\n'
+            '| Rank | Water | Food Sources | House | Clothes | Church | Luxury |\n'
+            '+------+-------+--------------+-------+---------+--------+--------+\n'
+            '| Monk |   x   |       1      | Dorms |         |    x   |        |\n'
+            '+------+-------+--------------+-------+---------+--------+--------+```')
+            await channel.send(villagerneeds)
+            await channel.send(armyneeds)
+            await channel.send(clergyneeds)
             await message.delete()
         # keybindings help command
         elif cmd == '/keybindings':
