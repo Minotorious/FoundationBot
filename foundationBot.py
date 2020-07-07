@@ -16,15 +16,15 @@ import os
 # Special Permissions Required: Manage Messages
 
 # pinning system parameters
-pinsChannel = 710932116749156412 # channel id where the messages should be pinned
-pinsRoles = [ 710764517801590805 ] # list of role ids to activate the pinning system
+pinsChannel = 513029879080419349 # channel id where the messages should be pinned
+pinsRoles = [ 441307762643959819, 421755121555210261 ] # list of role ids to activate the pinning system
 
 # leaderboard system parameters
-leaderboardEmoji = 642441101432848405 # id of the emoji to activate the scoring
-leaderboardChannel = 710932141021855784 # channel id in which the scoring works
+leaderboardEmoji = 512002627085795328 # id of the emoji to activate the scoring
+leaderboardChannel = 438363717995069463 # channel id in which the scoring works
 
 # other parameters
-moddingChannel = 710768911175385139 # channel id of modding_general
+moddingChannel = 589771859793281054 # channel id of modding_general
 
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
 
