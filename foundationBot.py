@@ -56,6 +56,13 @@ async def on_message(message):
                     users += entry[1] + '\n'
                     scores += str(entry[3]) + '\n'
                     ratios += str(entry[4]) + '\n'
+            
+            # check if leaderboard has entries
+            if len(users) == 0:
+                await channel.send('The Leaderboard has no Entries with a non-Zero Score!')
+                await message.delete()
+                return
+                
             embed = discord.Embed(
                     title = 'Screenshots Leaderboard',
                     #description = '',
