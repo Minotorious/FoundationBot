@@ -18,7 +18,7 @@ from botsettings_config import *
 
 # Special Permissions Required: Manage Messages
 
-# Instantiate bot settings objects
+# Instantiate bot settings object
 settings = botSettings()
 
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
