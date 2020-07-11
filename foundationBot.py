@@ -70,7 +70,7 @@ async def on_message(message):
                 embed.add_field(name='Username' , value=users, inline=True)
                 embed.add_field(name='Score', value=scores, inline=True)
                 embed.add_field(name='Ratio', value=ratios, inline=True)
-                embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y, %H:%M') +  ' UTC' )
+                embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y, %H:%M') +  ' UTC')
                 await channel.send(embed=embed)
                 await message.delete()
         # dxdiag help command
@@ -313,7 +313,7 @@ async def on_raw_reaction_add(payload):
                     description = message.content,
                     colour = discord.Colour.dark_green()
                 )
-                embed.set_author(name=message.author.display_name + ' on ' + message.created_at.strftime('%d/%m/%Y'))
+                embed.set_author(name=message.author.display_name + ' on ' + message.created_at.strftime('%d/%m/%Y, %H:%M') +  ' UTC')
                 embed.set_footer(text='Pinned by: ' + member.display_name )
                 await postChannel.send(msg, embed=embed)
                 break
