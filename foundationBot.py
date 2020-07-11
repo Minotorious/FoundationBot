@@ -52,7 +52,8 @@ async def on_message(message):
             scores = ''
             ratios = ''
             for entry in formattedleaderboard:
-                if entry[3] > 0:
+                # check if the user has a non-zero score and at least five posts
+                if entry[3] > 0 and entry[2] >= 5:
                     users += entry[1] + '\n'
                     scores += str(entry[3]) + '\n'
                     ratios += str(entry[4]) + '\n'
