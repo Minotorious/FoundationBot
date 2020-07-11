@@ -1,5 +1,5 @@
 # FoundationBot
-Bot for the Foundation Discord Server
+Bot for the Official Foundation Discord Server
 
 Official Discord Server: https://discord.gg/foundation
 
