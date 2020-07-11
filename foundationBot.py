@@ -70,10 +70,10 @@ async def on_message(message):
         elif cmd == '/dxdiag':
             embed = discord.Embed(
                     title = 'How do I obtain a dxdiag log?',
-                    description = ' 1) Press the Windows key + R\n \
-                                    2) In the small window that appeared type `dxdiag` and press Enter\n \
-                                    3) In the new window that opened press the `Save All Information` button\n \
-                                    4) Save the dxdiag.txt file and drag and drop it in this channel',
+                    description = '1) Press the Windows key + R\n'
+                                  '2) In the small window that appeared type `dxdiag` and press Enter\n'
+                                  '3) In the new window that opened press the `Save All Information` button\n'
+                                  '4) Save the dxdiag.txt file and drag and drop it in this channel',
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -85,8 +85,8 @@ async def on_message(message):
                     #description = '',
                     colour = discord.Colour.dark_green()
                 )
-            msgsteam = '`\\Program Files (x86)\\Steam\\userdata\\ YourSteamID \\690830\\remote\\Foundation\\Save Game`\n \
-                        ...Where YourSteamID is your unique Steam ID number'
+            msgsteam = ('`\\Program Files (x86)\\Steam\\userdata\\ YourSteamID \\690830\\remote\\Foundation\\Save Game`\n'
+                        '...Where YourSteamID is your unique Steam ID number')
             msggog = '`%USERPROFILE%\\AppData\\Local\\GOG.com\\Galaxy\\Applications\\51968221750131424\\Storage\\Shared\\Files\\Foundation\\Save Game`'
             msglocal = '`%USERPROFILE%\\Documents\\Polymorph Games\\Foundation\\Save Game`'
             embed.add_field(name='Steam Cloud Local Repository', value=msgsteam, inline=False)
@@ -98,10 +98,10 @@ async def on_message(message):
         elif cmd == '/trade':
             embed = discord.Embed(
                     title = 'Trade Prerequisites',
-                    description = ' 1) Trade route unlocked from the first tab of trade window\n \
-                                    2) Trade window second tab set to buy or sell, and an amount entered for the wanted resource\n \
-                                    3) Warehouse or Granary with slot assigned for the resource you want to trade\n \
-                                    4) Patience for the trader to show up. He will come approximately once per week',
+                    description = '1) Trade route unlocked from the first tab of trade window\n'
+                                  '2) Trade window second tab set to buy or sell, and an amount entered for the wanted resource\n'
+                                  '3) Warehouse or Granary with slot assigned for the resource you want to trade\n'
+                                  '4) Patience for the trader to show up. He will come approximately once per week',
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -110,10 +110,10 @@ async def on_message(message):
         elif cmd == '/modding':
             embed = discord.Embed(
                     title = 'Modding! Where to begin?',
-                    description = ' Foundation API: https://www.polymorph.games/foundation/modding/\n \
-                                    Beginner\'s Guide: https://foundation.mod.io/guides/how-to-mod-in-foundation\n \
-                                    Custom Map Guide: https://youtu.be/qXFk0DNUNUA\n \
-                                    For anything further feel free to ask us! ' + discord.utils.get(channel.guild.channels, id=moddingChannel).mention,
+                    description = 'Foundation API: https://www.polymorph.games/foundation/modding/\n'
+                                  'Beginner\'s Guide: https://foundation.mod.io/guides/how-to-mod-in-foundation\n'
+                                  'Custom Map Guide: https://youtu.be/qXFk0DNUNUA\n'
+                                  'For anything further feel free to ask us! ' + discord.utils.get(channel.guild.channels, id=moddingChannel).mention,
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -122,10 +122,10 @@ async def on_message(message):
         elif cmd == '/prospecting':
             embed = discord.Embed(
                     title = 'How to Prospecting?',
-                    description = ' 1) Big rock node inside your domain\n \
-                                    2) Bailiff assigned to the bailiff\'s office\n \
-                                    3) Start prospecting mandate\n \
-                                    4) Click on discovered mineral node to build mines',
+                    description = '1) Big rock node inside your domain\n'
+                                  '2) Bailiff assigned to the bailiff\'s office\n'
+                                  '3) Start prospecting mandate\n'
+                                  '4) Click on discovered mineral node to build mines',
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -134,9 +134,10 @@ async def on_message(message):
         elif cmd == '/immigration':
             embed = discord.Embed(
                     title = 'What affects Immigration?',
-                    description = ' 1) Happiness\n \
-                                    2) Residential Space, note desirability also matters depending on the villager rank!\n \
-                                    3) Employment, note villagers with a job but no workplace still count as unemployed!\n',
+                    description = '1) Happiness\n'
+                                  '2) Residential Space, note desirability also matters depending on the villager rank!\n'
+                                  '3) Employment, note villagers with a job but no workplace still count as unemployed!\n\n'
+                                  'For more detailed information see this thread: https://steamcommunity.com/app/690830/discussions/0/1742265965886407909/',
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -145,11 +146,11 @@ async def on_message(message):
         elif cmd == '/preview':
             embed = discord.Embed(
                     title = 'How do I activate a Preview build?',
-                    description = ' 1) Right click on Foundation on Steam\n \
-                                    2) Select Properties\n \
-                                    3) Navigate to the BETAS tab\n \
-                                    4) Select the preview build from the drop down and press close\n \
-                                    5) The preview build should start downloading automatically',
+                    description = '1) Right click on Foundation on Steam\n'
+                                  '2) Select Properties\n'
+                                  '3) Navigate to the BETAS tab\n'
+                                  '4) Select the preview build from the drop down and press close\n'
+                                  '5) The preview build should start downloading automatically',
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -195,33 +196,66 @@ async def on_message(message):
                     #description = '',
                     colour = discord.Colour.dark_green()
                 )
-            keys = 'Shift + Left Click\n \
-            T\n \
-            Ctrl + Mouse Wheel\n \
-            Ctrl + U\n \
-            Ctrl + S\n \
-            +/-\n \
-            Space\n \
-            Backspace\n \
-            Esc\n \
-            W/A/S/D\n \
-            Q/E\n \
-            R/F\n \
-            Ctrl + MMB + Mouse move'
-            descriptions = 'keep building/part selected\n \
-            toggle monument part snapping\n \
-            adjust zoning tool brush size\n \
-            hide UI\n \
-            quicksave\n \
-            change game speed\n \
-            pause game\n \
-            close all open windows\n \
-            close currently focused window\n \
-            move camera\n \
-            rotate camera\n \
-            pitch camera\n \
-            fast pan camera'
+            keys = ('Shift + Left Click\n'
+                    'T\n'
+                    'Ctrl + Mouse Wheel\n'
+                    'Ctrl + U\n'
+                    'Ctrl + S\n'
+                    '+/-\n'
+                    'Space\n'
+                    'Backspace\n'
+                    'Esc\n'
+                    'W/A/S/D\n'
+                    'Q/E\n'
+                    'R/F\n'
+                    'Ctrl + MMB + Mouse move')
+            descriptions = ('keep building/part selected\n'
+                            'toggle monument part snapping\n'
+                            'adjust zoning tool brush size\n'
+                            'hide UI\n'
+                            'quicksave\n'
+                            'change game speed\n'
+                            'pause game\n'
+                            'close all open windows\n'
+                            'close currently focused window\n'
+                            'move camera\n'
+                            'rotate camera\n'
+                            'pitch camera\n'
+                            'fast pan camera')
             embed.add_field(name='Key' , value=keys, inline=True)
+            embed.add_field(name='Description', value=descriptions, inline=True)
+            await channel.send(embed=embed)
+            await message.delete()
+        # commands help command
+        elif cmd == '/help' or cmd == '/commands':
+            embed = discord.Embed(
+                    title = 'Available Commands',
+                    #description = '',
+                    colour = discord.Colour.dark_green()
+                )
+            commands = ('/leaderboard\n'
+                        '/dxdiag\n'
+                        '/savefiles\n'
+                        '/trade\n'
+                        '/modding\n'
+                        '/prospecting\n'
+                        '/immigration\n'
+                        '/preview\n'
+                        '/needs\n'
+                        '/keybindings\n'
+                        '/help & /commands')
+            descriptions = ('Displays screenshot leaderboard\n'
+                            'How to obtain a dxdiag log\n'
+                            'Where to find save files\n'
+                            'How to trade\n'
+                            'How to modding\n'
+                            'How to prospecting\n'
+                            'What affects immigration\n'
+                            'How to activate a preview build\n'
+                            'What needs do villagers have\n'
+                            'Displays available keybindings\n'
+                            'Displays this help message\n')
+            embed.add_field(name='Command' , value=commands, inline=True)
             embed.add_field(name='Description', value=descriptions, inline=True)
             await channel.send(embed=embed)
             await message.delete()
@@ -337,28 +371,25 @@ def create_connection(db_file):
 def create_leaderboard_table(conn):
     try:
         cur = conn.cursor()
-        sql = ' CREATE TABLE IF NOT EXISTS Leaderboard ( \
-                                        id integer PRIMARY KEY, \
-                                        userid integer NOT NULL UNIQUE, \
-                                        score integer NOT NULL \
-                                    );'
+        sql = 'CREATE TABLE IF NOT EXISTS Leaderboard ( \
+               id integer PRIMARY KEY, \
+               userid integer NOT NULL UNIQUE, \
+               score integer NOT NULL \
+               );'
         cur.execute(sql)
     except Error as e:
         print(e)
 
 # create leaderboard entry
 def create_leaderboard_entry(conn, leaderboardEntry):
-    sql = ' INSERT INTO Leaderboard(userid,score) \
-              VALUES(?,?) '
+    sql = 'INSERT INTO Leaderboard(userid,score) VALUES(?,?)'
     cur = conn.cursor()
     cur.execute(sql, leaderboardEntry)
     return cur.lastrowid
 
 # update leaderboard entry
 def update_leaderboard_entry(conn, leaderboardEntry):
-    sql = ' UPDATE Leaderboard \
-              SET score = ? \
-              WHERE userid = ?'
+    sql = 'UPDATE Leaderboard SET score = ? WHERE userid = ?'
     cur = conn.cursor()
     cur.execute(sql, leaderboardEntry)
     conn.commit()
