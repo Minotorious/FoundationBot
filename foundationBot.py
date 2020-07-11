@@ -61,19 +61,18 @@ async def on_message(message):
             if len(users) == 0:
                 await channel.send('The Leaderboard has no Entries with a non-Zero Score!')
                 await message.delete()
-                return
-                
-            embed = discord.Embed(
-                    title = 'Screenshots Leaderboard',
-                    #description = '',
-                    colour = discord.Colour.dark_green()
-                )
-            embed.add_field(name='Username' , value=users, inline=True)
-            embed.add_field(name='Score', value=scores, inline=True)
-            embed.add_field(name='Ratio', value=ratios, inline=True)
-            embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y') )
-            await channel.send(embed=embed)
-            await message.delete()
+            else:
+                embed = discord.Embed(
+                        title = 'Screenshots Leaderboard',
+                        #description = '',
+                        colour = discord.Colour.dark_green()
+                    )
+                embed.add_field(name='Username' , value=users, inline=True)
+                embed.add_field(name='Score', value=scores, inline=True)
+                embed.add_field(name='Ratio', value=ratios, inline=True)
+                embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y') )
+                await channel.send(embed=embed)
+                await message.delete()
         # dxdiag help command
         elif cmd == '/dxdiag':
             embed = discord.Embed(
