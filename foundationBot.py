@@ -70,7 +70,7 @@ async def on_message(message):
                 embed.add_field(name='Username' , value=users, inline=True)
                 embed.add_field(name='Score', value=scores, inline=True)
                 embed.add_field(name='Ratio', value=ratios, inline=True)
-                embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y') )
+                embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y, %H:%M') +  ' UTC' )
                 await channel.send(embed=embed)
                 await message.delete()
         # dxdiag help command
@@ -466,7 +466,7 @@ def main():
     # create leaderboard table
         create_leaderboard_table(conn)
     else:
-        print('Error! cannot create the database connection.')
+        print('Error! cannot create the database connection!')
     # get all users already in the database and convert list of tuples to plain list
     leaderboard = list(sum(get_leaderboard_users(conn), ()))
     # get the bot's unique token
