@@ -11,20 +11,15 @@ import sqlite3
 from sqlite3 import Error
 import os
 
-# ----------------------------- REQUIRED PARAMETERS ----------------------------- #
+# Import bot settings object
+from botsettings_config import *
+
+# ------------------------------ GENERAL SETTINGS ------------------------------- #
 
 # Special Permissions Required: Manage Messages
 
-# pinning system parameters
-pinsChannel = 513029879080419349 # channel id where the messages should be pinned
-pinsRoles = [ 441307762643959819, 421755121555210261 ] # list of role ids to activate the pinning system
-
-# leaderboard system parameters
-leaderboardEmoji = 512002627085795328 # id of the emoji to activate the scoring
-leaderboardChannel = 438363717995069463 # channel id in which the scoring works
-
-# other parameters
-moddingChannel = 589771859793281054 # channel id of modding_general
+# Instantiate bot settings objects
+settings = botSettings()
 
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
 
@@ -45,18 +40,22 @@ async def on_message(message):
         # leaderboard display command
         if cmd == '/leaderboard':
             currentLeaderboard = get_leaderboard(conn)
-            formattedleaderboard = [[0]*3 for i in range(len(currentLeaderboard))]
+            formattedleaderboard = [[0]*5 for i in range(len(currentLeaderboard))]
             for i,entry in enumerate(currentLeaderboard):
-                formattedleaderboard[i][0] = currentLeaderboard[i][0]
-                formattedleaderboard[i][1] = message.guild.get_member(currentLeaderboard[i][1]).display_name
-                formattedleaderboard[i][2] = currentLeaderboard[i][2]
+                formattedleaderboard[i][0] = currentLeaderboard[i][0] # id primary key
+                formattedleaderboard[i][1] = message.guild.get_member(currentLeaderboard[i][1]).display_name # userid
+                formattedleaderboard[i][2] = currentLeaderboard[i][2] # postcount
+                formattedleaderboard[i][3] = currentLeaderboard[i][3] # score
+                formattedleaderboard[i][4] = currentLeaderboard[i][3] / currentLeaderboard[i][2] # ratio
             formattedleaderboard.sort(key=sortKey, reverse = True)
             users = ''
             scores = ''
+            ratios = ''
             for entry in formattedleaderboard:
-                if entry[2] > 0:
+                if entry[3] > 0:
                     users += entry[1] + '\n'
-                    scores += str(entry[2]) + '\n'
+                    scores += str(entry[3]) + '\n'
+                    ratios += str(entry[4]) + '\n'
             embed = discord.Embed(
                     title = 'Screenshots Leaderboard',
                     #description = '',
@@ -64,8 +63,10 @@ async def on_message(message):
                 )
             embed.add_field(name='Username' , value=users, inline=True)
             embed.add_field(name='Score', value=scores, inline=True)
+            embed.add_field(name='Ratio', value=ratios, inline=True)
             embed.set_footer(text='Leaderboard as of ' + message.created_at.strftime('%d/%m/%Y') )
             await channel.send(embed=embed)
+            await message.delete()
         # dxdiag help command
         elif cmd == '/dxdiag':
             embed = discord.Embed(
@@ -113,7 +114,7 @@ async def on_message(message):
                     description = 'Foundation API: https://www.polymorph.games/foundation/modding/\n'
                                   'Beginner\'s Guide: https://foundation.mod.io/guides/how-to-mod-in-foundation\n'
                                   'Custom Map Guide: https://youtu.be/qXFk0DNUNUA\n'
-                                  'For anything further feel free to ask us! ' + discord.utils.get(channel.guild.channels, id=moddingChannel).mention,
+                                  'For anything further feel free to ask us! ' + discord.utils.get(channel.guild.channels, id=settings.moddingChannel).mention,
                     colour = discord.Colour.dark_green()
                 )
             await channel.send(embed=embed)
@@ -260,26 +261,29 @@ async def on_message(message):
             await channel.send(embed=embed)
             await message.delete()
     # screenshot leaderboard system
-    if channel.id == leaderboardChannel:
+    if channel.id == settings.leaderboardChannel:
         if len(message.attachments) > 0:
             for attachment in message.attachments:
                 if attachment.url.endswith('.jpg') \
                 or attachment.url.endswith('.jpeg') \
                 or attachment.url.endswith('.png'):
-                    await message.add_reaction(discord.utils.get(channel.guild.emojis, id=leaderboardEmoji))
+                    await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.leaderboardEmoji))
+                    # check if user is already in the leaderboard
                     if not message.author.id in leaderboard:
                         try:
-                            create_leaderboard_entry(conn, (message.author.id, 0))
+                            create_leaderboard_entry(conn, (message.author.id, 1, 0))
                             conn.commit()
                             leaderboard.append(message.author.id)
-                        except sqlite3.IntegrityError:
-                            pass
                         except Error as e:
                             print(e)
                             pass
                         finally:
                             break
                     else:
+                        # add to postcount since it is not the first post
+                        postcount = int(get_leaderboard_user_postcount(conn, message.author.id)[0][0]) # [0][0] for getting the actual value out of list of tuples
+                        postcount += 1
+                        update_leaderboard_entry_postcount(conn, (postcount, message.author.id))
                         break
         
 @client.event
@@ -293,11 +297,11 @@ async def on_raw_reaction_add(payload):
     if str(emoji) == '📌':
         member = payload.member
         # check the emoji was used by a player with the allowed role to pin
-        for role in pinsRoles:
+        for role in settings.pinsRoles:
             if discord.utils.get(member.guild.roles, id=role) in member.roles:
                 origChannel = client.get_channel(payload.channel_id)
                 message = await origChannel.fetch_message(payload.message_id)
-                postChannel = client.get_channel(pinsChannel)
+                postChannel = client.get_channel(settings.pinsChannel)
                 msg = 'https://discordapp.com/channels/' + str(member.guild.id) + '/' + str(origChannel.id) + '/' + str(message.id)
                 embed = discord.Embed(
                     description = message.content,
@@ -309,9 +313,9 @@ async def on_raw_reaction_add(payload):
                 break
 
     # screenshot leaderboard system
-    elif emoji.id == leaderboardEmoji:
+    elif emoji.id == settings.leaderboardEmoji:
         channel = client.get_channel(payload.channel_id)
-        if channel.id == leaderboardChannel:
+        if channel.id == settings.leaderboardChannel:
             message = await channel.fetch_message(payload.message_id)
             # check if the bot has reacted to the screenshot
             async for user in discord.utils.get(message.reactions, emoji=emoji).users():
@@ -322,18 +326,18 @@ async def on_raw_reaction_add(payload):
                             or attachment.url.endswith('.jpeg') \
                             or attachment.url.endswith('.png'):
                                 # add leaderboard point
-                                score = int(get_leaderboard_user_score(conn, message.author.id)[0][0])
+                                score = int(get_leaderboard_user_score(conn, message.author.id)[0][0]) # [0][0] for getting the actual value out of list of tuples
                                 score += 1
-                                update_leaderboard_entry(conn, (score, message.author.id))
+                                update_leaderboard_entry_score(conn, (score, message.author.id))
                                 break
 
 @client.event
 async def on_raw_reaction_remove(payload):
     emoji = payload.emoji
     # screenshot leaderboard system
-    if emoji.id == leaderboardEmoji:
+    if emoji.id == settings.leaderboardEmoji:
         channel = client.get_channel(payload.channel_id)
-        if channel.id == leaderboardChannel:
+        if channel.id == settings.leaderboardChannel:
             message = await channel.fetch_message(payload.message_id)
             # check if the bot has reacted to the screenshot
             async for user in discord.utils.get(message.reactions, emoji=emoji).users():
@@ -344,12 +348,12 @@ async def on_raw_reaction_remove(payload):
                             or attachment.url.endswith('.jpeg') \
                             or attachment.url.endswith('.png'):
                                 # remove leaderboard point
-                                score = int(get_leaderboard_user_score(conn, message.author.id)[0][0])
+                                score = int(get_leaderboard_user_score(conn, message.author.id)[0][0]) # [0][0] for getting the actual value out of list of tuples
                                 if score > 0:
                                     score -= 1
                                 else:
                                     score = 0
-                                update_leaderboard_entry(conn, (score, message.author.id))
+                                update_leaderboard_entry_score(conn, (score, message.author.id))
                                 break
 
 @client.event
@@ -374,6 +378,7 @@ def create_leaderboard_table(conn):
         sql = 'CREATE TABLE IF NOT EXISTS Leaderboard ( \
                id integer PRIMARY KEY, \
                userid integer NOT NULL UNIQUE, \
+               postcount integer NOT NULL, \
                score integer NOT NULL \
                );'
         cur.execute(sql)
@@ -382,14 +387,21 @@ def create_leaderboard_table(conn):
 
 # create leaderboard entry
 def create_leaderboard_entry(conn, leaderboardEntry):
-    sql = 'INSERT INTO Leaderboard(userid,score) VALUES(?,?)'
+    sql = 'INSERT INTO Leaderboard(userid,postcount,score) VALUES(?,?,?)'
     cur = conn.cursor()
     cur.execute(sql, leaderboardEntry)
     return cur.lastrowid
 
-# update leaderboard entry
-def update_leaderboard_entry(conn, leaderboardEntry):
+# update leaderboard entry score
+def update_leaderboard_entry_score(conn, leaderboardEntry):
     sql = 'UPDATE Leaderboard SET score = ? WHERE userid = ?'
+    cur = conn.cursor()
+    cur.execute(sql, leaderboardEntry)
+    conn.commit()
+
+# update leaderboard entry postcount
+def update_leaderboard_entry_postcount(conn, leaderboardEntry):
+    sql = 'UPDATE Leaderboard SET postcount = ? WHERE userid = ?'
     cur = conn.cursor()
     cur.execute(sql, leaderboardEntry)
     conn.commit()
@@ -417,12 +429,20 @@ def get_leaderboard_user_score(conn, userid):
 
     row = cur.fetchall()
     return row
+    
+# get the postcount of a specific user from the leaderboard
+def get_leaderboard_user_postcount(conn, userid):
+    cur = conn.cursor()
+    cur.execute('SELECT postcount FROM Leaderboard WHERE userid = ?', (userid,))
+
+    row = cur.fetchall()
+    return row
 
 # ---------------------------------- UTILITIES ---------------------------------- #
 
 # for leaderboard list sorting
 def sortKey(element):
-    return element[2]
+    return element[4]
 
 # get the bot's unique token from a file
 def getToken():
