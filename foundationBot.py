@@ -255,7 +255,7 @@ async def on_message(message):
             descriptions = ('Displays screenshot leaderboard\n'
                             'How to obtain a dxdiag log\n'
                             'Where to find save files\n'
-                            'How to trade\n'
+                            'How to trading\n'
                             'How to modding\n'
                             'How to prospecting\n'
                             'What affects immigration\n'
