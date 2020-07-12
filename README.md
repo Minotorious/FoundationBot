@@ -1,6 +1,14 @@
 # FoundationBot
 Bot for the Official Foundation Discord Server
 
+Official Discord Server: https://discord.gg/foundation
+
+Official Developer Website: https://www.polymorph.games/
+
+Steam Store Page: https://store.steampowered.com/app/690830/Foundation/
+
+Available Features:
+
 Screenshot Leaderboard System: Gain points with the splendour reactions a screenshot gets
 
 Available Commands:
@@ -26,9 +34,3 @@ Available Commands:
 /keybindings -> Displays available keybindings
 
 /help & /commands -> Displays help message
-
-Official Discord Server: https://discord.gg/foundation
-
-Official Developer Website: https://www.polymorph.games/
-
-Steam Store Page: https://store.steampowered.com/app/690830/Foundation/
