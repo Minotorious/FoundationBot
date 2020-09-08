@@ -96,7 +96,5 @@ class RankingSystemCooldown:
     
     @tasks.loop(count=1)
     async def cooldown(self, userID):
-        print('Cooldown Loop Start: ' + str(userID))
         await asyncio.sleep(60)
         self.rankingSystem.removeCooldownListEntry(userID)
-        print('Cooldown Loop End: ' + str(userID))

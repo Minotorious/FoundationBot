@@ -103,10 +103,7 @@ async def on_message(message):
                         rankingSystem.setSaveListEntryExp(re)
                     else:
                         rankingSystem.createSaveListEntry(re)
-            print('approved')
-        else:
-            print('cooldown')
-            
+        
     await bot.process_commands(message)
 
 @bot.event
@@ -1739,7 +1736,6 @@ class DatabaseWrite(commands.Cog):
     
     @tasks.loop(minutes=5.0)
     async def autosave(self):
-        print('Save Loop: ' + str(self.autosave.current_loop))
         leaderboardInsertCheck = 0
         for entry in leaderboardSystem.getSaveList():
             leaderboardInsertCheck = create_leaderboard_entry(conn, (entry.userID,entry.postCount,entry.score,entry.userID))
