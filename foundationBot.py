@@ -11,7 +11,6 @@ from discord.ext import commands, tasks
 import sqlite3
 from sqlite3 import Error
 import os
-from math import floor
 
 # Import database methods
 from foundationBotDatabaseStuff import *
@@ -20,9 +19,16 @@ from foundationBotDatabaseStuff import *
 from foundationBotLeaderboard import *
 from foundationBotRanking import *
 
-# ------------------------------ GENERAL SETTINGS ------------------------------- #
+# ----------------------------------- GENERAL ----------------------------------- #
 
-# Special Permissions Required: Manage Roles
+# Special Permissions Required: 
+# Manage Roles
+# Read Text Channels & See Voice Channels
+# Send Messages
+# Manage Messages
+# Read Message History
+# Mention @everyone, @here, and All Roles
+# Add Reactions
 
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
 
