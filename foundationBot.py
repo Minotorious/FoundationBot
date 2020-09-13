@@ -540,6 +540,39 @@ class GeneralCommands(commands.Cog):
             embed.add_field(name='Ratio', value=ratios, inline=True)
             embed.set_footer(text='Leaderboard as of ' + ctx.message.created_at.strftime('%d/%m/%Y, %H:%M') +  ' UTC')
             await ctx.send(embed=embed)
+    
+    # player rank display command
+    @commands.guild_only()
+    @commands.command(description='Displays your current rank')
+    async def rank(self, ctx):
+        re = rankingSystem.getRankingEntry(ctx.author.id)
+        curRankName = discord.utils.get(ctx.guild.roles, id=re.rank).name
+        nextRank, nextExp = getNextRank(re)
+        nextRankName = discord.utils.get(ctx.guild.roles, id=nextRank).name
+        if nextRank != settings.highestRole:
+            prog = progress(re.experience, nextExp)
+            percentage = round(100.0 * re.experience / float(nextExp), 1)
+        else:
+            prog = progress(nextExp, nextExp)
+            percentage = 100.0
+        embed = discord.Embed(
+                title = curRankName + ' ' + ctx.author.display_name,
+                colour = discord.Colour.dark_green()
+            )
+        if re.estate == 'Labour':
+            emojiurl = discord.utils.get(ctx.guild.emojis, id=settings.labourEmoji).url
+            embed.set_thumbnail(url=emojiurl)
+            embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
+        elif re.estate == 'Clergy':
+            emojiurl = discord.utils.get(ctx.guild.emojis, id=settings.clergyEmoji).url
+            embed.set_thumbnail(url=emojiurl)
+            embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
+        elif re.estate == 'Kingdom':
+            emojiurl = discord.utils.get(ctx.guild.emojis, id=settings.kingdomEmoji).url
+            embed.set_thumbnail(url=emojiurl)
+            embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
+        
+        await ctx.send(embed=embed)
 
 class SettingsCommands(commands.Cog):
     def __init__(self, bot):
@@ -1188,7 +1221,7 @@ class SettingsCommands(commands.Cog):
         settingsCommands.sort(key=lambda command: command.name)
         
         for i,command in enumerate(settingsCommands):
-            if i < floor(len(settingsCommands)/2):
+            if i < len(settingsCommands)/2:
                 spaces = ''
                 length = 0
                 if len(command.aliases) > 0:
@@ -1230,6 +1263,7 @@ class SettingsCommands(commands.Cog):
 
 # ---------------------------------- UTILITIES ---------------------------------- #
 
+# bot settings class
 class Settings:
     def __init__(self):
         # pinning system parameters
@@ -1341,9 +1375,57 @@ class Settings:
             elif setting[1] == 'expLevelH' and setting[2] != None:
                 self.expLevelH = int(setting[2])
 
+def progress(count, total):
+    bar_len = 10
+    filled_len = int(round(bar_len * count / float(total)))
+    #bar = '`' + '█' * filled_len + '-' * (bar_len - filled_len) + '`'
+    bar = '■' * filled_len + '□' * (bar_len - filled_len)
+    return bar
+
 # for leaderboard list sorting
 def sortKey(element):
     return element[3]
+
+def getNextRank(rankingEntry):
+    if rankingEntry.estate == 'Labour':
+        if rankingEntry.rank == settings.defaultRole:
+            return settings.labourRole1, settings.expLevel1
+        elif rankingEntry.rank == settings.labourRole1:
+            return settings.labourRole2, settings.expLevel2
+        elif rankingEntry.rank == settings.labourRole2:
+            return settings.labourRole3, settings.expLevel3
+        elif rankingEntry.rank == settings.labourRole3:
+            return settings.labourRole4, settings.expLevel4
+        elif rankingEntry.rank == settings.labourRole4:
+            return settings.highestRole, settings.expLevelH
+        elif rankingEntry.rank == settings.highestRole:
+            return settings.highestRole, settings.expLevelH
+    elif rankingEntry.estate == 'Clergy':
+        if rankingEntry.rank == settings.defaultRole:
+            return settings.clergyRole1, settings.expLevel1
+        elif rankingEntry.rank == settings.clergyRole1:
+            return settings.clergyRole2, settings.expLevel2
+        elif rankingEntry.rank == settings.clergyRole2:
+            return settings.clergyRole3, settings.expLevel3
+        elif rankingEntry.rank == settings.clergyRole3:
+            return settings.clergyRole4, settings.expLevel4
+        elif rankingEntry.rank == settings.clergyRole4:
+            return settings.highestRole, settings.expLevelH
+        elif rankingEntry.rank == settings.highestRole:
+            return settings.highestRole, settings.expLevelH
+    elif rankingEntry.estate == 'Kingdom':
+        if rankingEntry.rank == settings.defaultRole:
+            return settings.kingdomRole1, settings.expLevel1
+        elif rankingEntry.rank == settings.kingdomRole1:
+            return settings.kingdomRole2, settings.expLevel2
+        elif rankingEntry.rank == settings.kingdomRole2:
+            return settings.kingdomRole3, settings.expLevel3
+        elif rankingEntry.rank == settings.kingdomRole3:
+            return settings.kingdomRole4, settings.expLevel4
+        elif rankingEntry.rank == settings.kingdomRole4:
+            return settings.highestRole, settings.expLevelH
+        elif rankingEntry.rank == settings.highestRole:
+            return settings.highestRole, settings.expLevelH
 
 # get the bot's unique token from a file
 def getToken():
