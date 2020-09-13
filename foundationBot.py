@@ -555,7 +555,7 @@ class GeneralCommands(commands.Cog):
         curRankName = discord.utils.get(ctx.guild.roles, id=re.rank).name
         nextRank, nextExp = getNextRank(re)
         nextRankName = discord.utils.get(ctx.guild.roles, id=nextRank).name
-        if nextRank != settings.highestRole:
+        if re.rank != settings.highestRole:
             prog = progress(re.experience, nextExp)
             percentage = round(100.0 * re.experience / float(nextExp), 1)
         else:
