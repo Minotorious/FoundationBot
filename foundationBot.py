@@ -579,6 +579,32 @@ class GeneralCommands(commands.Cog):
             embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
         
         await ctx.send(embed=embed)
+    
+    # award exp command
+    @commands.guild_only()
+    @commands.command(description='Awards a player an amount of server experience. Admin only command!')
+    @commands.has_guild_permissions(administrator=True)
+    async def awardExp(self, ctx, exp: str, memberid: str):
+        try:
+            member = ctx.guild.get_member(int(memberid))
+            if member != None:
+                try:
+                    exp = int(exp)
+                    re = rankingSystem.getRankingEntry(member.id)
+                    if re != None:
+                        re.experience += exp
+                        await ctx.send(ctx.author.mention + ' awarded ' + str(exp) + ' experience points to ' + member.mention)
+                        rankingSystem.setRankingEntryExp(re)
+                        if any(entry.userID == member.id for entry in rankingSystem.getSaveList()):
+                            rankingSystem.setSaveListEntryExp(re)
+                        else:
+                            rankingSystem.createSaveListEntry(re)
+                except ValueError as e:
+                    await ctx.send('Invalid Experience Amount! The experience to award should only consist of an integer number!')
+            else:
+                await ctx.send('Invalid User ID! No member found with the specified ID!')
+        except ValueError as e:
+            await ctx.send('Invalid User ID! The user id should only consist of an integer number!')
 
 class SettingsCommands(commands.Cog):
     def __init__(self, bot):
