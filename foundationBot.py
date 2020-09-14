@@ -605,7 +605,6 @@ class GeneralCommands(commands.Cog):
                 await ctx.send('Invalid User ID! No member found with the specified ID!')
         except ValueError as e:
             await ctx.send('Invalid User ID! The user id should only consist of an integer number!')
-    
 
 class SettingsCommands(commands.Cog):
     def __init__(self, bot):
