@@ -16,6 +16,7 @@ class rankingEntry:
         self.experience = None
         self.estate = None
         self.rank = None
+        self.gender = None
 
 # Ranking System Class
 class rankingSystem:
@@ -54,6 +55,11 @@ class rankingSystem:
             if entry.userID == re.userID:
                 entry.rank = re.rank
     
+    def setRankingEntryGender(self, re):
+        for entry in self.rankingTable:
+            if entry.userID == re.userID:
+                entry.gender = re.gender
+    
     def getSaveList(self):
         return self.saveList
     
@@ -78,12 +84,17 @@ class rankingSystem:
             if entry.userID == re.userID:
                 entry.rank = re.rank
     
+    def setSaveListEntryGender(self, re):
+        for entry in self.saveList:
+            if entry.userID == re.userID:
+                entry.gender = re.gender
+    
     def getCooldownList(self):
         return self.cooldownList
         
     def createCooldownListEntry(self,userID):
         self.cooldownList.append(userID)
-        
+    
     def removeCooldownListEntry(self, userID):
         try:
             self.cooldownList.remove(userID)

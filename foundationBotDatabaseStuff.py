@@ -67,7 +67,8 @@ def create_ranking_table(conn):
                userid integer NOT NULL UNIQUE, \
                experience integer NOT NULL, \
                estate string NOT NULL, \
-               rank integer NOT NULL \
+               rank integer NOT NULL, \
+               gender string NOT NULL \
                );'
         cur.execute(sql)
     except Error as e:
@@ -75,7 +76,7 @@ def create_ranking_table(conn):
 
 # create ranking entry
 def create_ranking_entry(conn, rankingEntry):
-    sql = 'INSERT INTO Ranks (userid,experience,estate,rank) SELECT ?,?,?,? WHERE NOT EXISTS(SELECT * FROM Ranks WHERE userid=?)'
+    sql = 'INSERT INTO Ranks (userid,experience,estate,rank,gender) SELECT ?,?,?,?,? WHERE NOT EXISTS(SELECT * FROM Ranks WHERE userid=?)'
     cur = conn.cursor()
     cur.execute(sql, rankingEntry)
     conn.commit()
@@ -83,7 +84,7 @@ def create_ranking_entry(conn, rankingEntry):
 
 # update ranking entry
 def update_ranking_entry(conn, rankingEntry):
-    sql='UPDATE Ranks SET experience = ?, estate = ?, rank = ? WHERE userid = ?'
+    sql='UPDATE Ranks SET experience = ?, estate = ?, rank = ?, gender = ? WHERE userid = ?'
     cur = conn.cursor()
     cur.execute(sql, rankingEntry)
     conn.commit()
