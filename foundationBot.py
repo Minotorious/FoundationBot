@@ -89,6 +89,7 @@ async def on_message(message):
                     re.experience = 1
                     re.estate = 'Labour'
                     re.rank = settings.defaultRole
+                    re.gender = 'Male'
                     rankingSystem.createRankingEntry(re)
                     rankingSystem.createSaveListEntry(re)
                     await message.channel.send('A new villager has arrived! Welcome ' + message.author.mention + '!\n' +
@@ -102,8 +103,9 @@ async def on_message(message):
                 if re != None:
                     re.experience += 1
                     rankCheck, msg = await checkRank(message.author, re)
+                    file, embed = createRankEmbed(message.author, re)
                     if rankCheck is True:
-                        await message.channel.send(msg)
+                        await message.channel.send(msg, file=file, embed=embed)
                     rankingSystem.setRankingEntryExp(re)
                     if any(entry.userID == message.author.id for entry in rankingSystem.getSaveList()):
                         rankingSystem.setSaveListEntryExp(re)
@@ -203,6 +205,34 @@ async def on_raw_reaction_add(payload):
                                 rankingSystem.setRankingEntryEstate(re)
                                 if any(entry.userID == payload.member.id for entry in rankingSystem.getSaveList()):
                                     rankingSystem.setSaveListEntryEstate(re)
+                                else:
+                                    rankingSystem.createSaveListEntry(re)
+        
+        elif str(emoji) == '♂':
+            if payload.channel_id == settings.rankingChannel:
+                if payload.message_id == settings.rankingMessage:
+                    if any(entry.userID == payload.member.id for entry in rankingSystem.getRankingTable()):
+                        re = rankingSystem.getRankingEntry(payload.member.id)
+                        if re != None:
+                            if re.gender != 'Male':
+                                re.gender = 'Male'
+                                rankingSystem.setRankingEntryGender(re)
+                                if any(entry.userID == payload.member.id for entry in rankingSystem.getSaveList()):
+                                    rankingSystem.setSaveListEntryGender(re)
+                                else:
+                                    rankingSystem.createSaveListEntry(re)
+        
+        elif str(emoji) == '♀':
+            if payload.channel_id == settings.rankingChannel:
+                if payload.message_id == settings.rankingMessage:
+                    if any(entry.userID == payload.member.id for entry in rankingSystem.getRankingTable()):
+                        re = rankingSystem.getRankingEntry(payload.member.id)
+                        if re != None:
+                            if re.gender != 'Female':
+                                re.gender = 'Female'
+                                rankingSystem.setRankingEntryGender(re)
+                                if any(entry.userID == payload.member.id for entry in rankingSystem.getSaveList()):
+                                    rankingSystem.setSaveListEntryGender(re)
                                 else:
                                     rankingSystem.createSaveListEntry(re)
 
@@ -552,33 +582,8 @@ class GeneralCommands(commands.Cog):
     @commands.command(description='Displays your current rank')
     async def rank(self, ctx):
         re = rankingSystem.getRankingEntry(ctx.author.id)
-        curRankName = discord.utils.get(ctx.guild.roles, id=re.rank).name
-        nextRank, nextExp = getNextRank(re)
-        nextRankName = discord.utils.get(ctx.guild.roles, id=nextRank).name
-        if re.rank != settings.highestRole:
-            prog = progress(re.experience, nextExp)
-            percentage = round(100.0 * re.experience / float(nextExp), 1)
-        else:
-            prog = progress(nextExp, nextExp)
-            percentage = 100.0
-        embed = discord.Embed(
-                title = curRankName + ' ' + ctx.author.display_name,
-                colour = discord.Colour.dark_green()
-            )
-        if re.estate == 'Labour':
-            emojiurl = discord.utils.get(ctx.guild.emojis, id=settings.labourEmoji).url
-            embed.set_thumbnail(url=emojiurl)
-            embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
-        elif re.estate == 'Clergy':
-            emojiurl = discord.utils.get(ctx.guild.emojis, id=settings.clergyEmoji).url
-            embed.set_thumbnail(url=emojiurl)
-            embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
-        elif re.estate == 'Kingdom':
-            emojiurl = discord.utils.get(ctx.guild.emojis, id=settings.kingdomEmoji).url
-            embed.set_thumbnail(url=emojiurl)
-            embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
-        
-        await ctx.send(embed=embed)
+        file, embed = createRankEmbed(ctx.author, re)
+        await ctx.send(file=file, embed=embed)
     
     # award exp command
     @commands.guild_only()
@@ -605,6 +610,108 @@ class GeneralCommands(commands.Cog):
                 await ctx.send('Invalid User ID! No member found with the specified ID!')
         except ValueError as e:
             await ctx.send('Invalid User ID! The user id should only consist of an integer number!')
+
+    @commands.command(description='Test Command')
+    async def test(self, ctx):
+        prog = progress(1, 2)
+        percentage = 50.0
+        embed = discord.Embed(
+                title = 'Testing Embed for Rank Images',
+                colour = discord.Colour.dark_green()
+            )
+        embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value='curRankName ' + prog + ' nextRankName')
+        basepath = os.getcwd() + os.sep + 'levels' + os.sep
+        
+        await ctx.send('Newcomer')
+        genderstr = os.sep + 'male' + os.sep
+        file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        genderstr = os.sep + 'female' + os.sep
+        file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        
+        await ctx.send('Labour Path')
+        genderstr = os.sep + 'male' + os.sep
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole1.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole2.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole3.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole4.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        genderstr = os.sep + 'female' + os.sep
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole1.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole2.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole3.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'labour' + genderstr + 'labourRole4.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        
+        await ctx.send('Clergy Path')
+        genderstr = os.sep + 'male' + os.sep
+        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole1.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole2.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole3.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole4.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        
+        await ctx.send('Kingdom Path')
+        genderstr = os.sep + 'male' + os.sep
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole1.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole2.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole3.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole4.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        genderstr = os.sep + 'female' + os.sep
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole1.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole2.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole3.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole4.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        
+        await ctx.send('High Lord')
+        genderstr = os.sep + 'male' + os.sep
+        file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        genderstr = os.sep + 'female' + os.sep
+        file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
+        embed.set_thumbnail(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
 
 class SettingsCommands(commands.Cog):
     def __init__(self, bot):
@@ -912,6 +1019,8 @@ class SettingsCommands(commands.Cog):
             await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.labourEmoji))
             await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.clergyEmoji))
             await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.kingdomEmoji))
+            await message.add_reaction('♂')
+            await message.add_reaction('♀')
         else:
             await ctx.send('At least one of the Required Parameters for the Ranking System has not been set, consult `/set check`!')
     
@@ -1407,10 +1516,10 @@ class Settings:
             elif setting[1] == 'expLevelH' and setting[2] != None:
                 self.expLevelH = int(setting[2])
 
+# rank progress bar for the ranking embed
 def progress(count, total):
     bar_len = 10
     filled_len = int(round(bar_len * count / float(total)))
-    #bar = '`' + '█' * filled_len + '-' * (bar_len - filled_len) + '`'
     bar = '■' * filled_len + '□' * (bar_len - filled_len)
     return bar
 
@@ -1418,6 +1527,7 @@ def progress(count, total):
 def sortKey(element):
     return element[3]
 
+# returning the next rank for the ranking embed
 def getNextRank(rankingEntry):
     if rankingEntry.estate == 'Labour':
         if rankingEntry.rank == settings.defaultRole:
@@ -1465,6 +1575,7 @@ def getToken():
         TOKEN = t.read()
     return TOKEN
 
+# check and assign correct rank after exp gain
 async def checkRank(member, re):
     if re.experience >= settings.expLevel1 and re.experience < settings.expLevel2:
         if re.estate == 'Labour':
@@ -1837,6 +1948,93 @@ async def checkRank(member, re):
     else:
         return False, ''
 
+# create embed with rank image and progress bar
+def createRankEmbed(member, re):
+    curRankName = discord.utils.get(member.guild.roles, id=re.rank).name
+    nextRank, nextExp = getNextRank(re)
+    nextRankName = discord.utils.get(member.guild.roles, id=nextRank).name
+    if re.rank != settings.highestRole:
+        prog = progress(re.experience, nextExp)
+        percentage = round(100.0 * re.experience / float(nextExp), 1)
+    else:
+        prog = progress(nextExp, nextExp)
+        percentage = 100.0
+    embed = discord.Embed(
+            title = curRankName + ' ' + member.display_name,
+            colour = discord.Colour.dark_green()
+        )
+    embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value=curRankName + ' ' + prog + ' ' + nextRankName)
+    basepath = os.getcwd() + os.sep + 'levels' + os.sep
+    if re.estate == 'Labour':
+        if re.gender == 'Male':
+            genderstr = os.sep + 'male' + os.sep
+        else:
+            genderstr = os.sep + 'female' + os.sep
+        if re.rank == settings.defaultRole:
+            file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.labourRole1:
+            file = discord.File(basepath + 'labour' + genderstr + 'labourRole1.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.labourRole2:
+            file = discord.File(basepath + 'labour' + genderstr + 'labourRole2.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.labourRole3:
+            file = discord.File(basepath + 'labour' + genderstr + 'labourRole3.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.labourRole4:
+            file = discord.File(basepath + 'labour' + genderstr + 'labourRole4.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.highestRole:
+            file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+    elif re.estate == 'Clergy':
+        genderstr = os.sep + 'male' + os.sep
+        if re.rank == settings.defaultRole:
+            file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.clergyRole1:
+            file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole1.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.clergyRole2:
+            file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole2.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.clergyRole3:
+            file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole3.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.clergyRole4:
+            file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole4.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.highestRole:
+            file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+    elif re.estate == 'Kingdom':
+        if re.gender == 'Male':
+            genderstr = os.sep + 'male' + os.sep
+        else:
+            genderstr = os.sep + 'female' + os.sep
+        if re.rank == settings.defaultRole:
+            file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.kingdomRole1:
+            file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole1.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.kingdomRole2:
+            file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole2.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.kingdomRole3:
+            file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole3.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.kingdomRole4:
+            file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole4.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+        elif re.rank == settings.highestRole:
+            file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
+            embed.set_thumbnail(url='attachment://image.png')
+    
+    return file, embed
+
+# congratulatory message upon rank up
 def congratulatoryMessage(member, re):
     rank = member.guild.get_role(re.rank)
     if (rank != None):
@@ -1858,9 +2056,9 @@ class DatabaseWrite(commands.Cog):
         leaderboardSystem.clearSaveList()
         ranksInsertCheck = 0
         for entry in rankingSystem.getSaveList():
-            ranksInsertCheck = create_ranking_entry(conn, (entry.userID,entry.experience,entry.estate,entry.rank,entry.userID))
+            ranksInsertCheck = create_ranking_entry(conn, (entry.userID,entry.experience,entry.estate,entry.rank,entry.gender,entry.userID))
             if ranksInsertCheck == 0:
-                update_ranking_entry(conn, (entry.experience,entry.estate,entry.rank,entry.userID))
+                update_ranking_entry(conn, (entry.experience,entry.estate,entry.rank,entry.gender,entry.userID))
         rankingSystem.clearSaveList()
         
     @autosave.before_loop
@@ -1912,6 +2110,7 @@ def main():
         re.experience = entry[2]
         re.estate = entry[3]
         re.rank = entry[4]
+        re.gender = entry[5]
         rankingtable.append(re)
     rankingSystem.setRankingTable(rankingtable)
     
@@ -1921,9 +2120,12 @@ def main():
 
 if __name__ == '__main__':
     conn, TOKEN = main()
-    # start bot
+    
+    # add all cog classes
     bot.add_cog(HelpCommands(bot))
     bot.add_cog(GeneralCommands(bot))
     bot.add_cog(SettingsCommands(bot))
     bot.add_cog(DatabaseWrite(bot))
+    
+    # start bot
     bot.run(TOKEN)
