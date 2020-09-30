@@ -30,9 +30,29 @@ from foundationBotRanking import *
 # Mention @everyone, @here, and All Roles
 # Add Reactions
 
+# intents definition i.e. what events/methods the bot has access to
+intents = discord.Intents(
+                          guilds = True,
+                          members = True, # needs activation on discord dev portal
+                          emojis = True,
+                          guild_messages = True,
+                          guild_reactions = True,
+                          
+                          bans = False,
+                          integrations = False,
+                          webhooks = False,
+                          invites = False,
+                          voice_states = False,
+                          presences = False, # needs activation on discord dev portal
+                          dm_messages = False,
+                          dm_reactions = False,
+                          guild_typing = False,
+                          dm_typing = False
+                         )
+
 # --------------------------- DISCORD EVENT LISTENERS --------------------------- #
 
-bot = commands.Bot(command_prefix='/', help_command=None)
+bot = commands.Bot(command_prefix='/', help_command=None, intents=intents)
 
 @bot.event
 async def on_message(message):
