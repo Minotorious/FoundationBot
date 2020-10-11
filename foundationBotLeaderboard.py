@@ -6,58 +6,92 @@
 | ||        ||        |‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗/ |
 \----------------------------------------------------------------------------'''
 
-# Leaderboard Entry Object
-class leaderboardEntry:
+# import logger
+from foundationBotLogger import *
+logger = Logger()
+
+# Screenshot Leaderboard Entry Object
+class screenshotLeaderboardEntry:
+    def __init__(self):
+        self.screenshotID = None
+        self.score = None
+
+# Messages Leaderboard Entry Object
+class messagesLeaderboardEntry:
     def __init__(self):
         self.userID = None
         self.score = None
-        self.postCount = None
 
 # Leaderboard System Class
 class leaderboardSystem:
     def __init__(self):
-        self.leaderboard = []
-        self.saveList = []
-        
-    def getLeaderboard(self):
-        return self.leaderboard
-        
-    def setLeaderboard(self, l):
-        self.leaderboard = l
-        
-    def getLeaderboardEntry(self, userID):
-        for entry in self.leaderboard:
+        self.screenshotLeaderboard = []
+        self.messagesLeaderboard = []
+        self.screenshotSaveList = []
+        self.messagesSaveList = []
+    
+    def getScreenshotLeaderboard(self):
+        return self.screenshotLeaderboard
+    
+    def setScreenshotLeaderboard(self, sl):
+        self.screenshotLeaderboard = sl
+    
+    def getScreenshotLeaderboardEntry(self, screenshotID):
+        for entry in self.screenshotLeaderboard:
+            if entry.screenshotID == screenshotID:
+                return entry
+    
+    def createScreenshotLeaderboardEntry(self, sle):
+        self.screenshotLeaderboard.append(sle)
+    
+    def setScreenshotLeaderboardEntryScore(self, sle):
+        for entry in self.screenshotLeaderboard:
+            if entry.screenshotID == sle.screenshotID:
+                entry.score = sle.score
+    
+    def getScreenshotSaveList(self):
+        return self.screenshotSaveList
+    
+    def clearScreenshotSaveList(self):
+        self.screenshotSaveList = []
+    
+    def createScreenshotSaveListEntry(self, sle):
+        self.screenshotSaveList.append(sle)
+    
+    def setScreenshotSaveListEntryScore(self, sle):
+        for entry in self.screenshotSaveList:
+            if entry.screenshotID == sle.screenshotID:
+                entry.score = sle.score
+    
+    def getMessagesLeaderboard(self):
+        return self.messagesLeaderboard
+    
+    def setMessagesLeaderboard(self, ml):
+        self.messagesLeaderboard = ml
+    
+    def getMessagesLeaderboardEntry(self, userID):
+        for entry in self.messagesLeaderboard:
             if entry.userID == userID:
                 return entry
-        
-    def createLeaderboardEntry(self, le):
-        self.leaderboard.append(le)
-        
-    def setLeaderboardEntryScore(self, le):
-        for entry in self.leaderboard:
-            if entry.userID == le.userID:
-                entry.score = le.score
-        
-    def setLeaderboardEntryPostCount(self, le):
-        for entry in self.leaderboard:
-            if entry.userID == le.userID:
-                entry.postCount = le.postCount
-        
-    def getSaveList(self):
-        return self.saveList
-        
-    def clearSaveList(self):
-        self.saveList = []
-        
-    def createSaveListEntry(self, le):
-        self.saveList.append(le)
-        
-    def setSaveListEntryScore(self, le):
-        for entry in self.saveList:
-            if entry.userID == le.userID:
-                entry.score = le.score
-        
-    def setSaveListEntryPostCount(self, le):
-        for entry in self.saveList:
-            if entry.userID == le.userID:
-                entry.postCount = le.postCount
+    
+    def createMessagesLeaderboardEntry(self, mle):
+        self.messagesLeaderboard.append(mle)
+    
+    def setMessagesLeaderboardEntryScore(self, mle):
+        for entry in self.messagesLeaderboard:
+            if entry.userID == mle.userID:
+                entry.score = mle.score
+    
+    def getMessagesSaveList(self):
+        return self.messagesSaveList
+    
+    def clearMessagesSaveList(self):
+        self.messagesSaveList = []
+    
+    def createMessagesSaveListEntry(self, mle):
+        self.messagesSaveList.append(mle)
+    
+    def setMessagesSaveListEntryScore(self, mle):
+        for entry in self.messagesSaveList:
+            if entry.userID == mle.userID:
+                entry.score = mle.score

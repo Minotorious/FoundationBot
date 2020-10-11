@@ -9,6 +9,10 @@
 import asyncio
 from discord.ext import tasks
 
+# import logger
+from foundationBotLogger import *
+logger = Logger()
+
 # Ranking System Entry
 class rankingEntry:
     def __init__(self):
