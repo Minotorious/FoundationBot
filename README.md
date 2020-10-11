@@ -11,6 +11,7 @@ Steam Store Page: https://store.steampowered.com/app/690830/Foundation/
 Available Features:
 
 1. Screenshot Leaderboard
+1. Messages Leaderboard
 1. Ranking
 1. Message Pinning
 1. General Help and Utility
