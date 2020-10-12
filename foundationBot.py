@@ -10,6 +10,7 @@ import discord
 from discord.ext import commands
 import sqlite3
 from sqlite3 import Error
+from datetime import timezone
 import os
 
 # Import database methods
@@ -78,41 +79,43 @@ async def on_message(message):
         channel = message.channel
         
         # screenshot leaderboard system
-        if message.created_at.timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
-            if channel.id == settings.screenshotChannel:
-                if len(message.attachments) > 0:
-                    for attachment in message.attachments:
-                        if attachment.url.lower().endswith('.jpg') \
-                        or attachment.url.lower().endswith('.jpeg') \
-                        or attachment.url.lower().endswith('.png'):
-                            sle = screenshotLeaderboardEntry()
-                            sle.screenshotID = message.id
-                            sle.score = 0
-                            leaderboardSystem.createScreenshotLeaderboardEntry(sle)
-                            leaderboardSystem.createScreenshotSaveListEntry(sle)
-                            await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.leaderboardEmoji))
-                            break
+        if channel.id == settings.screenshotChannel:
+            if settings.screenshotPostTime != None:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - 120: #settings.leaderboardInterval*24*3600:
+                    if len(message.attachments) > 0:
+                        for attachment in message.attachments:
+                            if attachment.url.lower().endswith('.jpg') \
+                            or attachment.url.lower().endswith('.jpeg') \
+                            or attachment.url.lower().endswith('.png'):
+                                sle = screenshotLeaderboardEntry()
+                                sle.screenshotID = message.id
+                                sle.score = 0
+                                leaderboardSystem.createScreenshotLeaderboardEntry(sle)
+                                leaderboardSystem.createScreenshotSaveListEntry(sle)
+                                await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.leaderboardEmoji))
+                                break
         
         # messages leaderboard system
-        if message.created_at.timestamp() > settings.messagesPostTime - settings.leaderboardInterval*24*3600:
-            if not any(role.id == settings.excludedRoles for role in message.author.roles):
-                # check if user is already in the messages leaderboard
-                if not any(entry.userID == message.author.id for entry in leaderboardSystem.getMessagesLeaderboard()):
-                    mle = messagesLeaderboardEntry()
-                    mle.userID = message.author.id
-                    mle.score = 1
-                    leaderboardSystem.createMessagesLeaderboardEntry(mle)
-                    leaderboardSystem.createMessagesSaveListEntry(mle)
-                else:
-                    # add to score since it is not the first post
-                    mle = leaderboardSystem.getMessagesLeaderboardEntry(message.author.id)
-                    if mle != None:
-                        mle.score += 1
-                        leaderboardSystem.setMessagesLeaderboardEntryScore(mle)
-                        if any(entry.userID == message.author.id for entry in leaderboardSystem.getMessagesSaveList()):
-                            leaderboardSystem.setMessagesSaveListEntryScore(mle)
-                        else:
-                            leaderboardSystem.createMessagesSaveListEntry(mle)
+        if settings.messagesPostTime != None:
+            if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.messagesPostTime - 120: #settings.leaderboardInterval*24*3600:
+                if not any(role.id == settings.excludedRoles for role in message.author.roles):
+                    # check if user is already in the messages leaderboard
+                    if not any(entry.userID == message.author.id for entry in leaderboardSystem.getMessagesLeaderboard()):
+                        mle = messagesLeaderboardEntry()
+                        mle.userID = message.author.id
+                        mle.score = 1
+                        leaderboardSystem.createMessagesLeaderboardEntry(mle)
+                        leaderboardSystem.createMessagesSaveListEntry(mle)
+                    else:
+                        # add to score since it is not the first post
+                        mle = leaderboardSystem.getMessagesLeaderboardEntry(message.author.id)
+                        if mle != None:
+                            mle.score += 1
+                            leaderboardSystem.setMessagesLeaderboardEntryScore(mle)
+                            if any(entry.userID == message.author.id for entry in leaderboardSystem.getMessagesSaveList()):
+                                leaderboardSystem.setMessagesSaveListEntryScore(mle)
+                            else:
+                                leaderboardSystem.createMessagesSaveListEntry(mle)
         
         # ranking system
         if not any(entry == message.author.id for entry in rankingSystem.getCooldownList()):
@@ -186,7 +189,7 @@ async def on_raw_reaction_add(payload):
             channel = bot.get_channel(payload.channel_id)
             if channel.id == settings.screenshotChannel:
                 message = await channel.fetch_message(payload.message_id)
-                if message.created_at.timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - 120: #settings.leaderboardInterval*24*3600:
                     # check if the bot has reacted to the screenshot
                     async for user in discord.utils.get(message.reactions, emoji=emoji).users():
                         if user == bot.user:
@@ -286,7 +289,7 @@ async def on_raw_reaction_remove(payload):
             channel = bot.get_channel(payload.channel_id)
             if channel.id == settings.screenshotChannel:
                 message = await channel.fetch_message(payload.message_id)
-                if message.created_at.timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - 120: #settings.leaderboardInterval*24*3600:
                     # check if the bot has reacted to the screenshot
                     async for user in discord.utils.get(message.reactions, emoji=emoji).users():
                         if user == bot.user:
@@ -296,17 +299,17 @@ async def on_raw_reaction_remove(payload):
                                     or attachment.url.endswith('.jpeg') \
                                     or attachment.url.endswith('.png'):
                                         # remove leaderboard point
-                                        le = leaderboardSystem.getScreenshotLeaderboardEntry(message.author.id)
-                                        if le != None:
-                                            if le.score > 0:
-                                                le.score -= 1
+                                        sle = leaderboardSystem.getScreenshotLeaderboardEntry(message.id)
+                                        if sle != None:
+                                            if sle.score > 0:
+                                                sle.score -= 1
                                             else:
-                                                le.score = 0
-                                            leaderboardSystem.setScreenshotLeaderboardEntryScore(le)
-                                            if any(entry.userID == message.author.id for entry in leaderboardSystem.getScreenshotSaveList()):
-                                                leaderboardSystem.setScreenshotSaveListEntryScore(le)
+                                                sle.score = 0
+                                            leaderboardSystem.setScreenshotLeaderboardEntryScore(sle)
+                                            if any(entry.screenshotID == message.id for entry in leaderboardSystem.getScreenshotSaveList()):
+                                                leaderboardSystem.setScreenshotSaveListEntryScore(sle)
                                             else:
-                                                leaderboardSystem.createScreenshotSaveListEntry(le)
+                                                leaderboardSystem.createScreenshotSaveListEntry(sle)
                                         break
 
 @bot.event
@@ -320,11 +323,13 @@ async def on_command_error(ctx, error):
         else:
             await ctx.send('Missing Required Argument! Consult `/help` for more information!')
     elif isinstance(error, commands.errors.CommandNotFound):
+        logger.getLogger().error(error)
         pass
     elif isinstance(error, commands.NoPrivateMessage):
+        logger.getLogger().error(error)
         pass
     else:
-        logger.error(error)
+        logger.getLogger().error(error)
 
 @bot.event
 async def on_ready():
@@ -479,7 +484,9 @@ class AdminCommands(commands.Cog):
 def main():
     # create database
     database = os.getcwd() + os.sep + 'foundationBot.db'
+    logger.getLogger().info('Database Path: ' + database)
     conn = create_connection(database)
+    logger.getLogger().info('Connection Successful')
     if conn is not None:
         # create leaderboard tables
         create_screenshot_leaderboard_table(conn)
@@ -492,8 +499,9 @@ def main():
         init_settings(conn)
         settingsList = get_settings(conn)
         settings.setSettings(settingsList)
+        logger.getLogger().info('Settings Initialised Successfully')
     else:
-        logger.error('Error! cannot create the database connection!')
+        logger.getLogger().error('Error! cannot create the database connection!')
     
     leaderboardraw = get_screenshot_leaderboard(conn)
     leaderboard = []

@@ -34,6 +34,7 @@ def create_screenshot_leaderboard_table(conn):
                score integer NOT NULL \
                );'
         cur.execute(sql)
+        logger.getLogger().info('ScreenshotLeaderboard Table Created Successfully')
     except Error as e:
         logger.getLogger().error(e)
 
@@ -76,6 +77,7 @@ def create_messages_leaderboard_table(conn):
                score integer NOT NULL \
                );'
         cur.execute(sql)
+        logger.getLogger().info('MessagesLeaderboard Table Created Successfully')
     except Error as e:
         logger.getLogger().error(e)
 
@@ -123,6 +125,7 @@ def create_ranking_table(conn):
                gender string NOT NULL \
                );'
         cur.execute(sql)
+        logger.getLogger().info('Ranking Table Created Successfully')
     except Error as e:
         logger.getLogger().error(e)
 
@@ -160,6 +163,7 @@ def create_settings_table(conn):
                value string \
                );'
         cur.execute(sql)
+        logger.getLogger().info('Settings Table Created Successfully')
     except Error as e:
         logger.getLogger().error(e)
 

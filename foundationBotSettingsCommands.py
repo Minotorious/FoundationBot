@@ -398,7 +398,7 @@ class SettingsCommands(commands.Cog):
     @set.command(description='Sets the Time for the next Screenshot Leaderboard Post')
     async def screenshotPostTime(self, ctx, *, dateTime: str):
         try:
-            date = datetime.strptime(dateTime, '%d/%m/%Y %H:%M')
+            date = datetime.strptime(dateTime + ' UTC+0000', '%d/%m/%Y %H:%M %Z%z')
             timeStamp = date.timestamp()
             update_setting(self.conn, (timeStamp,'screenshotPostTime'))
             self.settings.screenshotPostTime = int(timeStamp)
@@ -409,7 +409,7 @@ class SettingsCommands(commands.Cog):
     @set.command(description='Sets the Time for the next Messages Leaderboard Post')
     async def messagesPostTime(self, ctx, *, dateTime: str):
         try:
-            date = datetime.strptime(dateTime, '%d/%m/%Y %H:%M')
+            date = datetime.strptime(dateTime + ' UTC+0000', '%d/%m/%Y %H:%M %Z%z')
             timeStamp = date.timestamp()
             update_setting(self.conn, (timeStamp,'messagesPostTime'))
             self.settings.messagesPostTime = int(timeStamp)
