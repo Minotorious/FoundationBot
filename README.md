@@ -28,6 +28,7 @@ Available Features:
 
 * 1 Custom Emoji to trigger the screenshot leaderboard
 * 1 Channel dedicated to the screenshot leaderboard
+* 1 Channel to post the leaderboards
 * 3 Custom Emojis to trigger the ranking estate changes
 * 1 Channel with a single message dedicated to the ranking emojis
 * 1 Role from which the ranking starts
