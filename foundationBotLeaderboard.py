@@ -122,7 +122,7 @@ class LeaderboardPost(commands.Cog):
                 self.leaderboardSystem.clearMessagesSaveList()
                 clear_messages_leaderboard(self.conn)
                 create_messages_leaderboard_table(self.conn)
-                self.settings.messagesPostTime += 120 #self.settings.leaderboardInterval*24*3600
+                self.settings.messagesPostTime += self.settings.leaderboardInterval*24*3600
                 update_setting(self.conn, (self.settings.messagesPostTime,'messagesPostTime'))
                 if len(leaderboard) > 0:
                     formattedleaderboard = [[0]*2 for i in range(len(leaderboard))]
@@ -158,7 +158,7 @@ class LeaderboardPost(commands.Cog):
                 self.leaderboardSystem.clearScreenshotSaveList()
                 clear_screenshot_leaderboard(self.conn)
                 create_screenshot_leaderboard_table(self.conn)
-                self.settings.screenshotPostTime += 120 #self.settings.leaderboardInterval*24*3600
+                self.settings.screenshotPostTime += self.settings.leaderboardInterval*24*3600
                 update_setting(self.conn, (self.settings.screenshotPostTime,'screenshotPostTime'))
                 if len(leaderboard) > 0:
                     winningEntry = leaderboard[0]

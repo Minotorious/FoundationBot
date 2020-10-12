@@ -81,7 +81,7 @@ async def on_message(message):
         # screenshot leaderboard system
         if channel.id == settings.screenshotChannel:
             if settings.screenshotPostTime != None:
-                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - 120: #settings.leaderboardInterval*24*3600:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
                     if len(message.attachments) > 0:
                         for attachment in message.attachments:
                             if attachment.url.lower().endswith('.jpg') \
@@ -97,7 +97,7 @@ async def on_message(message):
         
         # messages leaderboard system
         if settings.messagesPostTime != None:
-            if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.messagesPostTime - 120: #settings.leaderboardInterval*24*3600:
+            if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.messagesPostTime - settings.leaderboardInterval*24*3600:
                 if not any(role.id == settings.excludedRoles for role in message.author.roles):
                     # check if user is already in the messages leaderboard
                     if not any(entry.userID == message.author.id for entry in leaderboardSystem.getMessagesLeaderboard()):
@@ -189,7 +189,7 @@ async def on_raw_reaction_add(payload):
             channel = bot.get_channel(payload.channel_id)
             if channel.id == settings.screenshotChannel:
                 message = await channel.fetch_message(payload.message_id)
-                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - 120: #settings.leaderboardInterval*24*3600:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
                     # check if the bot has reacted to the screenshot
                     async for user in discord.utils.get(message.reactions, emoji=emoji).users():
                         if user == bot.user:
@@ -289,7 +289,7 @@ async def on_raw_reaction_remove(payload):
             channel = bot.get_channel(payload.channel_id)
             if channel.id == settings.screenshotChannel:
                 message = await channel.fetch_message(payload.message_id)
-                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - 120: #settings.leaderboardInterval*24*3600:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
                     # check if the bot has reacted to the screenshot
                     async for user in discord.utils.get(message.reactions, emoji=emoji).users():
                         if user == bot.user:
