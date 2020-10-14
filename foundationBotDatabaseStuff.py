@@ -9,52 +9,106 @@
 import sqlite3
 from sqlite3 import Error
 
+# import logger
+from foundationBotLogger import *
+logger = Logger()
+
 # create a connection to the SQLite database
 def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
     except Error as e:
-        print(e)
+        logger.getLogger().error(e)
     return conn
 
 # --------------------------------- LEADERBOARD ---------------------------------- #
 
-# create leaderboard table
-def create_leaderboard_table(conn):
+# create screenshot leaderboard table
+def create_screenshot_leaderboard_table(conn):
     try:
         cur = conn.cursor()
-        sql = 'CREATE TABLE IF NOT EXISTS Leaderboard ( \
+        sql = 'CREATE TABLE IF NOT EXISTS ScreenshotLeaderboard ( \
                id integer PRIMARY KEY, \
-               userid integer NOT NULL UNIQUE, \
-               postcount integer NOT NULL, \
+               screenshotid integer NOT NULL UNIQUE, \
                score integer NOT NULL \
                );'
         cur.execute(sql)
+        logger.getLogger().info('ScreenshotLeaderboard Table Created Successfully')
     except Error as e:
-        print(e)
+        logger.getLogger().error(e)
 
-# create leaderboard entry
-def create_leaderboard_entry(conn, leaderboardEntry):
-    sql = 'INSERT INTO Leaderboard (userid,postcount,score) SELECT ?,?,? WHERE NOT EXISTS(SELECT * FROM Leaderboard WHERE userid=?)'
+# create screenshots leaderboard entry
+def create_screenshot_leaderboard_entry(conn, sle):
+    sql = 'INSERT INTO ScreenshotLeaderboard (screenshotid,score) SELECT ?,? WHERE NOT EXISTS(SELECT * FROM ScreenshotLeaderboard WHERE screenshotid=?)'
     cur = conn.cursor()
-    cur.execute(sql, leaderboardEntry)
+    cur.execute(sql, sle)
     conn.commit()
     return cur.rowcount
 
-# update leaderboard entry
-def update_leaderboard_entry(conn, leaderboardEntry):
-    sql='UPDATE Leaderboard SET postcount = ?, score = ? WHERE userid = ?'
+# update screenshots leaderboard entry
+def update_screenshot_leaderboard_entry(conn, sle):
+    sql='UPDATE ScreenshotLeaderboard SET score = ? WHERE screenshotid = ?'
     cur = conn.cursor()
-    cur.execute(sql, leaderboardEntry)
+    cur.execute(sql, sle)
     conn.commit()
 
-# get the whole leaderboard
-def get_leaderboard(conn):
+# get screenshots leaderboard
+def get_screenshot_leaderboard(conn):
     cur = conn.cursor()
-    cur.execute('SELECT * FROM Leaderboard')
+    cur.execute('SELECT * FROM ScreenshotLeaderboard')
     rows = cur.fetchall()
     return rows
+
+# clear screenshot leaderboard
+def clear_screenshot_leaderboard(conn):
+    sql='DROP TABLE ScreenshotLeaderboard'
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+
+# create messages leaderboard table
+def create_messages_leaderboard_table(conn):
+    try:
+        cur = conn.cursor()
+        sql = 'CREATE TABLE IF NOT EXISTS MessagesLeaderboard ( \
+               id integer PRIMARY KEY, \
+               userid integer NOT NULL UNIQUE, \
+               score integer NOT NULL \
+               );'
+        cur.execute(sql)
+        logger.getLogger().info('MessagesLeaderboard Table Created Successfully')
+    except Error as e:
+        logger.getLogger().error(e)
+
+# create messages leaderboard entry
+def create_messages_leaderboard_entry(conn, mle):
+    sql = 'INSERT INTO MessagesLeaderboard (userid,score) SELECT ?,? WHERE NOT EXISTS(SELECT * FROM MessagesLeaderboard WHERE userid=?)'
+    cur = conn.cursor()
+    cur.execute(sql, mle)
+    conn.commit()
+    return cur.rowcount
+
+# update messages leaderboard entry
+def update_messages_leaderboard_entry(conn, mle):
+    sql='UPDATE MessagesLeaderboard SET score = ? WHERE userid = ?'
+    cur = conn.cursor()
+    cur.execute(sql, mle)
+    conn.commit()
+
+# get messages leaderboard
+def get_messages_leaderboard(conn):
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM MessagesLeaderboard')
+    rows = cur.fetchall()
+    return rows
+
+# clear messages leaderboard
+def clear_messages_leaderboard(conn):
+    sql='DROP TABLE MessagesLeaderboard'
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
 
 # ----------------------------------- RANKING ------------------------------------ #
 
@@ -71,8 +125,9 @@ def create_ranking_table(conn):
                gender string NOT NULL \
                );'
         cur.execute(sql)
+        logger.getLogger().info('Ranking Table Created Successfully')
     except Error as e:
-        print(e)
+        logger.getLogger().error(e)
 
 # create ranking entry
 def create_ranking_entry(conn, rankingEntry):
@@ -108,17 +163,24 @@ def create_settings_table(conn):
                value string \
                );'
         cur.execute(sql)
+        logger.getLogger().info('Settings Table Created Successfully')
     except Error as e:
-        print(e)
+        logger.getLogger().error(e)
 
 def init_settings(conn):
     sql = 'INSERT INTO Settings (setting,value) SELECT ?,? WHERE NOT EXISTS(SELECT * FROM Settings WHERE setting=?)'
     cur = conn.cursor()
     cur.execute(sql, ('botActive','False','botActive'))
+    cur.execute(sql, ('guildID',None,'guildID'))
+    cur.execute(sql, ('excludedRoles',None,'excludedRoles'))
     cur.execute(sql, ('pinsChannel',None,'pinsChannel'))
     cur.execute(sql, ('pinsRoles',None,'pinsRoles'))
     cur.execute(sql, ('leaderboardEmoji',None,'leaderboardEmoji'))
+    cur.execute(sql, ('leaderboardInterval',None,'leaderboardInterval'))
     cur.execute(sql, ('leaderboardChannel',None,'leaderboardChannel'))
+    cur.execute(sql, ('screenshotChannel',None,'screenshotChannel'))
+    cur.execute(sql, ('screenshotPostTime',None,'screenshotPostTime'))
+    cur.execute(sql, ('messagesPostTime',None,'messagesPostTime'))
     cur.execute(sql, ('moddingChannel',None,'moddingChannel'))
     cur.execute(sql, ('rankingChannel',None,'rankingChannel'))
     cur.execute(sql, ('rankingMessage',None,'rankingMessage'))

@@ -11,6 +11,7 @@ Steam Store Page: https://store.steampowered.com/app/690830/Foundation/
 Available Features:
 
 1. Screenshot Leaderboard
+1. Messages Leaderboard
 1. Ranking
 1. Message Pinning
 1. General Help and Utility
@@ -27,6 +28,7 @@ Available Features:
 
 * 1 Custom Emoji to trigger the screenshot leaderboard
 * 1 Channel dedicated to the screenshot leaderboard
+* 1 Channel to post the leaderboards
 * 3 Custom Emojis to trigger the ranking estate changes
 * 1 Channel with a single message dedicated to the ranking emojis
 * 1 Role from which the ranking starts
