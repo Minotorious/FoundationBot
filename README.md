@@ -36,6 +36,7 @@ Available Features:
 * 1 Role all estate paths lead to
 * 1 Channel for the message pinning
 * Any number of roles to trigger the message pinning
+* Any number of roles to be excluded from the leaderboards, they can still vote for the screenshots just not participate.
 * 1 Channel for the modding help command
 
 ## How to Set-Up & Settings Command Usage

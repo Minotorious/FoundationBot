@@ -79,26 +79,27 @@ async def on_message(message):
         channel = message.channel
         
         # screenshot leaderboard system
-        if channel.id == settings.screenshotChannel:
-            if settings.screenshotPostTime != None:
-                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
-                    if len(message.attachments) > 0:
-                        for attachment in message.attachments:
-                            if attachment.url.lower().endswith('.jpg') \
-                            or attachment.url.lower().endswith('.jpeg') \
-                            or attachment.url.lower().endswith('.png'):
-                                sle = screenshotLeaderboardEntry()
-                                sle.screenshotID = message.id
-                                sle.score = 0
-                                leaderboardSystem.createScreenshotLeaderboardEntry(sle)
-                                leaderboardSystem.createScreenshotSaveListEntry(sle)
-                                await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.leaderboardEmoji))
-                                break
+        if not any(role.id == settings.excludedRoles for role in message.author.roles):
+            if channel.id == settings.screenshotChannel:
+                if settings.screenshotPostTime != None:
+                    if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
+                        if len(message.attachments) > 0:
+                            for attachment in message.attachments:
+                                if attachment.url.lower().endswith('.jpg') \
+                                or attachment.url.lower().endswith('.jpeg') \
+                                or attachment.url.lower().endswith('.png'):
+                                    sle = screenshotLeaderboardEntry()
+                                    sle.screenshotID = message.id
+                                    sle.score = 0
+                                    leaderboardSystem.createScreenshotLeaderboardEntry(sle)
+                                    leaderboardSystem.createScreenshotSaveListEntry(sle)
+                                    await message.add_reaction(discord.utils.get(channel.guild.emojis, id=settings.leaderboardEmoji))
+                                    break
         
         # messages leaderboard system
-        if settings.messagesPostTime != None:
-            if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.messagesPostTime - settings.leaderboardInterval*24*3600:
-                if not any(role.id == settings.excludedRoles for role in message.author.roles):
+        if not any(role.id == settings.excludedRoles for role in message.author.roles):
+            if settings.messagesPostTime != None:
+                if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.messagesPostTime - settings.leaderboardInterval*24*3600:
                     # check if user is already in the messages leaderboard
                     if not any(entry.userID == message.author.id for entry in leaderboardSystem.getMessagesLeaderboard()):
                         mle = messagesLeaderboardEntry()
