@@ -335,6 +335,7 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_ready():
     logger.getLogger().info('The bot is ready!')
+    await client.change_presence(activity=discord.Game(name='Support @ mino.gg'))
 
 class GeneralCommands(commands.Cog):
     def __init__(self, bot):
