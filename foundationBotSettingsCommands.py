@@ -283,6 +283,7 @@ class SettingsCommands(commands.Cog):
     async def guildID(self, ctx):
         update_setting(self.conn, (str(ctx.guild.id),'guildID'))
         self.settings.guildID = ctx.guild.id
+        await ctx.send('guildID set to: ' + ctx.bot.get_guild(self.settings.guildID).name)
     
     @set.command(description='Sets the Roles to exclude from the Leaderboards')
     async def excludedRoles(self, ctx, *, roles: str):

@@ -1,0 +1,35 @@
+20/01/2021 18:26		WARNING	discord.client			PyNaCl is not installed, voice will NOT be supported
+20/01/2021 18:26		INFO	discord			Database Path: /mnt/c/Users/kyrlo/Desktop/Foundation/foundationBot/foundationBot.db
+20/01/2021 18:26		INFO	discord			Connection Successful
+20/01/2021 18:26		INFO	discord			ScreenshotLeaderboard Table Created Successfully
+20/01/2021 18:26		INFO	discord			MessagesLeaderboard Table Created Successfully
+20/01/2021 18:26		INFO	discord			Ranking Table Created Successfully
+20/01/2021 18:26		INFO	discord			Settings Table Created Successfully
+20/01/2021 18:26		INFO	discord			Settings Initialised Successfully
+20/01/2021 18:26		INFO	discord.client			logging in using static token
+20/01/2021 18:26		INFO	discord.gateway			Shard ID None has sent the IDENTIFY payload.
+20/01/2021 18:26		INFO	discord.gateway			Shard ID None has connected to Gateway: ["gateway-prd-main-9pdw",{"micros":107918,"calls":["discord-sessions-prd-2-19",{"micros":81005,"calls":["start_session",{"micros":52961,"calls":["api-prd-main-8fbp",{"micros":50530,"calls":["get_user",{"micros":4236},"add_authorized_ip",{"micros":4481},"get_guilds",{"micros":5919},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":10177,"calls":[]}]}]}] (Session ID: 4a22cce2c0af76912c5a6ffaa5e7f216).
+20/01/2021 18:26		INFO	discord			The bot is ready!
+20/01/2021 18:26		INFO	discord			Autosave Loop Started
+20/01/2021 18:26		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:27		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:28		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:29		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:30		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:31		INFO	discord			Autosave Loop Started
+20/01/2021 18:31		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:32		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:33		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:34		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:35		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:35		INFO	discord			MessagesLeaderboard Table Created Successfully
+20/01/2021 18:36		INFO	discord			Autosave Loop Started
+20/01/2021 18:36		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:37		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:38		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:39		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:40		INFO	discord			Leaderboard Postcheck Loop Started
+20/01/2021 18:41		INFO	discord.client			Cleaning up tasks.
+20/01/2021 18:41		INFO	discord.client			Cleaning up after 3 tasks.
+20/01/2021 18:41		INFO	discord.client			All tasks finished cancelling.
+20/01/2021 18:41		INFO	discord.client			Closing the event loop.

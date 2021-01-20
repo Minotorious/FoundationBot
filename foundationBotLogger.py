@@ -8,7 +8,6 @@
 
 import logging
 
-# Ranking System Class
 class Logger:
     def __init__(self):
         self.logger = self.setupLogger()
