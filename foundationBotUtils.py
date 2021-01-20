@@ -688,7 +688,7 @@ class DatabaseWrite(commands.Cog):
     
     @tasks.loop(minutes=5.0)
     async def autosave(self):
-        logger.getLogger().info('Autosave Loop Started')
+        #logger.getLogger().info('Autosave Loop Started')
         leaderboardInsertCheck = 0
         for entry in self.leaderboardSystem.getScreenshotSaveList():
             leaderboardInsertCheck = create_screenshot_leaderboard_entry(self.conn, (entry.screenshotID,entry.score,entry.screenshotID))
