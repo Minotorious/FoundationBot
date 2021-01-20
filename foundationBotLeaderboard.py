@@ -113,7 +113,7 @@ class LeaderboardPost(commands.Cog):
     
     @tasks.loop(minutes=1.0)
     async def post(self):
-        logger.getLogger().info('Leaderboard Postcheck Loop Started')
+        #logger.getLogger().info('Leaderboard Postcheck Loop Started')
         if self.settings.messagesPostTime != None:
             if datetime.now(timezone.utc).timestamp() >= self.settings.messagesPostTime:
                 guild = self.bot.get_guild(self.settings.guildID)
