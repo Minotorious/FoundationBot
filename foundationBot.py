@@ -78,8 +78,16 @@ async def on_message(message):
         # the channel the message was sent in
         channel = message.channel
         
+        # check if user should be excluded from leaderboards
+        excluded = False
+        for role in message.author.roles:
+            for entry in settings.excludedRoles:
+                if role.id == entry:
+                    excluded = True
+                    break
+        
         # screenshot leaderboard system
-        if not any(role.id == settings.excludedRoles for role in message.author.roles):
+        if excluded is False:
             if channel.id == settings.screenshotChannel:
                 if settings.screenshotPostTime != None:
                     if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.screenshotPostTime - settings.leaderboardInterval*24*3600:
@@ -97,7 +105,7 @@ async def on_message(message):
                                     break
         
         # messages leaderboard system
-        if not any(role.id == settings.excludedRoles for role in message.author.roles):
+        if excluded is False:
             if settings.messagesPostTime != None:
                 if message.created_at.replace(tzinfo=timezone.utc).timestamp() > settings.messagesPostTime - settings.leaderboardInterval*24*3600:
                     # check if user is already in the messages leaderboard
@@ -220,6 +228,7 @@ async def on_raw_reaction_add(payload):
                             if re.estate != 'Labour':
                                 re.estate = 'Labour'
                                 rankingSystem.setRankingEntryEstate(re)
+                                rankCheck, msg = await utils.checkRank(payload.member, re)
                                 if any(entry.userID == payload.member.id for entry in rankingSystem.getSaveList()):
                                     rankingSystem.setSaveListEntryEstate(re)
                                 else:
@@ -234,6 +243,7 @@ async def on_raw_reaction_add(payload):
                             if re.estate != 'Clergy':
                                 re.estate = 'Clergy'
                                 rankingSystem.setRankingEntryEstate(re)
+                                rankCheck, msg = await utils.checkRank(payload.member, re)
                                 if any(entry.userID == payload.member.id for entry in rankingSystem.getSaveList()):
                                     rankingSystem.setSaveListEntryEstate(re)
                                 else:
@@ -248,6 +258,7 @@ async def on_raw_reaction_add(payload):
                             if re.estate != 'Kingdom':
                                 re.estate = 'Kingdom'
                                 rankingSystem.setRankingEntryEstate(re)
+                                rankCheck, msg = await utils.checkRank(payload.member, re)
                                 if any(entry.userID == payload.member.id for entry in rankingSystem.getSaveList()):
                                     rankingSystem.setSaveListEntryEstate(re)
                                 else:
@@ -335,7 +346,7 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_ready():
     logger.getLogger().info('The bot is ready!')
-    #await client.change_presence(activity=discord.Game(name='Support @ mino.gg'))
+    await bot.change_presence(activity=discord.Game(name='minotorious.github.io')) # Support @ mino.gg
 
 class GeneralCommands(commands.Cog):
     def __init__(self, bot):
@@ -346,110 +357,9 @@ class GeneralCommands(commands.Cog):
     @commands.command(description='Displays your current rank')
     async def rank(self, ctx):
         re = rankingSystem.getRankingEntry(ctx.author.id)
-        file, embed = utils.createRankEmbed(ctx.author, re)
-        await ctx.send(file=file, embed=embed)
-    
-    @commands.command(description='Test Command')
-    async def test(self, ctx):
-        prog = utils.progress(1, 2)
-        percentage = 50.0
-        embed = discord.Embed(
-                title = 'Testing Embed for Rank Images',
-                colour = discord.Colour.dark_green()
-            )
-        embed.add_field(name='Progress to Next Rank: ' + str(percentage) + '%', value='curRankName ' + prog + ' nextRankName')
-        basepath = os.getcwd() + os.sep + 'levels' + os.sep
-        
-        await ctx.send('Newcomer')
-        genderstr = os.sep + 'male' + os.sep
-        file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        genderstr = os.sep + 'female' + os.sep
-        file = discord.File(basepath + 'other' + genderstr + 'defaultRole.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        
-        await ctx.send('Labour Path')
-        genderstr = os.sep + 'male' + os.sep
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole1.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole2.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole3.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole4.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        genderstr = os.sep + 'female' + os.sep
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole1.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole2.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole3.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'labour' + genderstr + 'labourRole4.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        
-        await ctx.send('Clergy Path')
-        genderstr = os.sep + 'male' + os.sep
-        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole1.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole2.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole3.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'clergy' + genderstr + 'clergyRole4.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        
-        await ctx.send('Kingdom Path')
-        genderstr = os.sep + 'male' + os.sep
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole1.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole2.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole3.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole4.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        genderstr = os.sep + 'female' + os.sep
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole1.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole2.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole3.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        file = discord.File(basepath + 'kingdom' + genderstr + 'kingdomRole4.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        
-        await ctx.send('High Lord')
-        genderstr = os.sep + 'male' + os.sep
-        file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
-        genderstr = os.sep + 'female' + os.sep
-        file = discord.File(basepath + 'other' + genderstr + 'highestRole.png', filename='image.png')
-        embed.set_thumbnail(url='attachment://image.png')
-        await ctx.send(file=file, embed=embed)
+        if re != None:
+            file, embed = utils.createRankEmbed(ctx.author, re)
+            await ctx.send(file=file, embed=embed)
 
 class AdminCommands(commands.Cog):
     def __init__(self, bot):

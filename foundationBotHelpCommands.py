@@ -65,13 +65,22 @@ class HelpCommands(commands.Cog):
     @commands.guild_only()
     @commands.command(description='How to modding')
     async def modding(self, ctx):
-        embed = discord.Embed(
-                title = 'Modding! Where to begin?',
-                description = 'Foundation API: https://www.polymorph.games/foundation/modding/\n'
-                              'For anything further feel free to ask us! ' + discord.utils.get(ctx.guild.channels, id=self.settings.moddingChannel).mention,
-                colour = discord.Colour.dark_green()
-            )
-        await ctx.send(embed=embed)
+        if discord.utils.get(ctx.guild.channels, id=self.settings.moddingChannel) != None:
+            embed = discord.Embed(
+                    title = 'Modding! Where to begin?',
+                    description = 'Foundation API: https://www.polymorph.games/foundation/modding/\n'
+                                  'For anything further feel free to ask us! ' + discord.utils.get(ctx.guild.channels, id=self.settings.moddingChannel).mention,
+                    colour = discord.Colour.dark_green()
+                )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                    title = 'Modding! Where to begin?',
+                    description = 'Foundation API: https://www.polymorph.games/foundation/modding/\n'
+                                  'For anything further feel free to ask us!',
+                    colour = discord.Colour.dark_green()
+                )
+            await ctx.send(embed=embed)
 
     # prospecting help command
     @commands.command(description='How to prospecting')
