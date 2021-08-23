@@ -1,2 +1,3 @@
 *.db
 TOKEN
+__pycache__
