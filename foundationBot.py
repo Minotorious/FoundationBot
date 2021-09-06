@@ -144,11 +144,8 @@ async def on_message(message):
                     re.gender = 'Male'
                     rankingSystem.createRankingEntry(re)
                     rankingSystem.createSaveListEntry(re)
-                    await message.channel.send('A new villager has arrived! Welcome ' + message.author.mention + '!\n' +
-                                               'You are now a **' + dr.name + '** on the **Labour** estate path to greatness!\n' +
-                                               'To earn experience towards ranks simply continue being active and talking within the community!\nWill you make it to **' + hr.name + '**? Only time will tell...\n\n'
-                                               'Note: You can switch to the **Clergy** or **Kingdom** estate paths at any time by reacting to their respective emojis in ' + rc.mention + 
-                                               '. To switch back into the **Labour** estate path simply react to the Labour emoji in the same channel.')
+                    await message.channel.send('Welcome ' + message.author.mention + '! You are now a **' + dr.name + '** on the **Labour** estate path!\n' +
+                                               'For more info and to change your path visit ' + rc.mention)
                     await message.author.add_roles(message.author.guild.get_role(settings.defaultRole))
             else:
                 re = rankingSystem.getRankingEntry(message.author.id)
