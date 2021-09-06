@@ -1,0 +1,4 @@
+*.db
+*.log
+TOKEN
+__pycache__
