@@ -144,7 +144,7 @@ async def on_message(message):
                     re.gender = 'Male'
                     rankingSystem.createRankingEntry(re)
                     rankingSystem.createSaveListEntry(re)
-                    await message.channel.send('Welcome ' + message.author.mention + '! You are now a **' + dr.name + '** on the **Labour** estate path!\n' +
+                    await message.channel.send('Welcome ' + message.author.mention + '! You are now a **' + dr.name + '** on the **Labour** estate path! ' +
                                                'For more info and to change your path visit ' + rc.mention)
                     await message.author.add_roles(message.author.guild.get_role(settings.defaultRole))
             else:
