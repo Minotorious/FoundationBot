@@ -111,7 +111,7 @@ class LeaderboardPost(commands.Cog):
         self.leaderboardSystem = leaderboardSystem
         self.post.start()
     
-    @tasks.loop(minutes=1.0)
+    @tasks.loop(minutes=10.0)
     async def post(self):
         #logger.getLogger().info('Leaderboard Postcheck Loop Started')
         if self.settings.messagesPostTime != None:
@@ -176,7 +176,7 @@ class LeaderboardPost(commands.Cog):
                             if message.author != None:
                                 embed = discord.Embed(
                                         title = 'Screenshot Leaderboard Week ' + str(datetime.now(timezone.utc).isocalendar()[1]),
-                                        description = 'Winner: ' + message.author.display_name + ' with ' + str(entry.score) + ' Votes!',
+                                        description = 'Winner: ' + message.author.mention + ' with ' + str(entry.score) + ' Votes!',
                                         colour = discord.Colour.dark_green()
                                         )
                                 for attachment in message.attachments:
