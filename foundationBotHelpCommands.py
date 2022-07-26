@@ -8,6 +8,7 @@
 
 import discord
 from discord.ext import commands
+import os
 
 # import logger
 from foundationBotLogger import *
@@ -17,6 +18,22 @@ class HelpCommands(commands.Cog):
     def __init__(self, bot, settings):
         self.bot = bot
         self.settings = settings
+
+    # crowdin link help command
+    @commands.command(aliases=['translate'], description='How to translate Foundation')
+    async def crowdin(self, ctx):
+        embed = discord.Embed(
+                title = 'How can I help translate Foundation?',
+                description = '1) Visit https://crowdin.com/project/foundation\n'
+                              '2) Create a free account\n'
+                              '3) Click on your country\'s flag to join the translation team\n'
+                              '4) Wait for approval and you can start translating Foundation!\n'
+                              '**If your language is not available let us know to add it!**',
+                colour = discord.Colour.dark_green()
+            )
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
+
 
     # dxdiag help command
     @commands.command(description='How to obtain a dxdiag log')
@@ -30,9 +47,10 @@ class HelpCommands(commands.Cog):
                 colour = discord.Colour.dark_green()
             )
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # savefiles location help command
-    @commands.command(description='Where to find save files')
+    @commands.command(aliases=['savegames'], description='Where to find save files')
     async def savefiles(self, ctx):
         embed = discord.Embed(
                 title = 'Where do I find my save files?',
@@ -47,6 +65,7 @@ class HelpCommands(commands.Cog):
         embed.add_field(name='GoG Cloud Local Repository', value=msggog, inline=False)
         embed.add_field(name='Non-Cloud Saves', value=msglocal, inline=False)
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # trade help command
     @commands.command(description='How to trading')
@@ -60,6 +79,7 @@ class HelpCommands(commands.Cog):
                 colour = discord.Colour.dark_green()
             )
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # modding help command
     @commands.guild_only()
@@ -81,6 +101,7 @@ class HelpCommands(commands.Cog):
                     colour = discord.Colour.dark_green()
                 )
             await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # prospecting help command
     @commands.command(description='How to prospecting')
@@ -94,6 +115,7 @@ class HelpCommands(commands.Cog):
                 colour = discord.Colour.dark_green()
             )
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # immigration help command
     @commands.command(description='What affects immigration')
@@ -107,6 +129,7 @@ class HelpCommands(commands.Cog):
                 colour = discord.Colour.dark_green()
             )
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # preview build help command
     @commands.command(description='How to activate a preview build')
@@ -121,43 +144,20 @@ class HelpCommands(commands.Cog):
                 colour = discord.Colour.dark_green()
             )
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # villager needs help command
     @commands.command(description='What needs do villagers have')
     async def needs(self, ctx):
-        villagerneeds = ('```Villager Rank Needs\n'
-        '+----------+-------+--------------+-------+---------+--------+--------+\n'
-        '|   Rank   | Water | Food Sources | House | Clothes | Church | Luxury |\n'
-        '+----------+-------+--------------+-------+---------+--------+--------+\n'
-        '| Newcomer |   x   |       1      |       |         |        |        |\n'
-        '+----------+-------+--------------+-------+---------+--------+--------+\n'
-        '|   Serf   |   x   |       1      | lvl 1 |         |    x   |        |\n'
-        '+----------+-------+--------------+-------+---------+--------+--------+\n'
-        '| Commoner |   x   |       2      | lvl 2 |    x    |    x   |        |\n'
-        '+----------+-------+--------------+-------+---------+--------+--------+\n'
-        '|  Citizen |   x   |       2      | lvl 2 |    x    |    x   |    1   |\n'
-        '+----------+-------+--------------+-------+---------+--------+--------+```')
-        armyneeds = ('```Army Rank Needs\n'
-        '+---------+-------+--------------+---------------+---------+--------+--------+\n'
-        '|   Rank  | Water | Food Sources |     House     | Clothes | Church | Luxury |\n'
-        '+---------+-------+--------------+---------------+---------+--------+--------+\n'
-        '|  Novice |   x   |       1      | lvl 1 / Dorms |         |    x   |        |\n'
-        '+---------+-------+--------------+---------------+---------+--------+--------+\n'
-        '| Soldier |   x   |       1      | lvl 2 / Dorms |    x    |    x   |    1   |\n'
-        '+---------+-------+--------------+---------------+---------+--------+--------+\n'
-        '|  Knight |   x   |       1      | lvl 2 / Dorms |    x    |    x   |    2   |\n'
-        '+---------+-------+--------------+---------------+---------+--------+--------+```')
-        clergyneeds = ('```Clergy Rank Needs\n'
-        '+-------+-------+--------------+-------+---------+--------+--------+\n'
-        '|  Rank | Water | Food Sources | House | Clothes | Church | Luxury |\n'
-        '+-------+-------+--------------+-------+---------+--------+--------+\n'
-        '|  Monk |   x   |       1      | Dorms |         |    x   |        |\n'
-        '+-------+-------+--------------+-------+---------+--------+--------+\n'
-        '| Prior |   x   |       1      | Dorms |         |    x   |        |\n'
-        '+-------+-------+--------------+-------+---------+--------+--------+```')
-        await ctx.send(villagerneeds)
-        await ctx.send(armyneeds)
-        await ctx.send(clergyneeds)
+        embed = discord.Embed(
+                title = 'What needs do villagers have?',
+                #description = '',
+                colour = discord.Colour.dark_green()
+            )
+        file = discord.File(os.getcwd() + os.sep + 'images' + os.sep + 'VillagerNeeds.png', filename='image.png')
+        embed.set_image(url='attachment://image.png')
+        await ctx.send(file=file, embed=embed)
+        await ctx.message.delete()
 
     # keybindings help command
     @commands.command(description='Displays available keybindings')
@@ -196,6 +196,7 @@ class HelpCommands(commands.Cog):
         embed.add_field(name='Key' , value=keys, inline=True)
         embed.add_field(name='Description', value=descriptions, inline=True)
         await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     # commands help command
     @commands.command(aliases=['commands'], description='Displays this help message')
@@ -289,3 +290,4 @@ class HelpCommands(commands.Cog):
         
         helpMessage += '```'
         await ctx.send(helpMessage)
+        await ctx.message.delete()

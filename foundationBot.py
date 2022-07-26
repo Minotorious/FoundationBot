@@ -357,6 +357,7 @@ class GeneralCommands(commands.Cog):
         if re != None:
             file, embed = utils.createRankEmbed(ctx.author, re)
             await ctx.send(file=file, embed=embed)
+            await ctx.message.delete()
 
 class AdminCommands(commands.Cog):
     def __init__(self, bot):
@@ -376,6 +377,7 @@ class AdminCommands(commands.Cog):
                     if re != None:
                         re.experience += exp
                         await ctx.send(ctx.author.mention + ' awarded ' + str(exp) + ' experience points to ' + member.mention)
+                        await ctx.message.delete()
                         rankingSystem.setRankingEntryExp(re)
                         if any(entry.userID == member.id for entry in rankingSystem.getSaveList()):
                             rankingSystem.setSaveListEntryExp(re)

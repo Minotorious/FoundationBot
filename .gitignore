@@ -1,4 +1,6 @@
 *.db
 *.log
+*.ai
+*.psd
 TOKEN
 __pycache__
